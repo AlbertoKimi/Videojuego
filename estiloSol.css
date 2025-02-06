@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat Alternates", sans-serif;
+}
+
+body {
+
+    background-image: url("Imagenes/Fondo.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.adelante{
+    margin-top: 20px;
+    color:white;
+    background-color: blueviolet;
+    border-radius: 45px;
+    padding: 10px 20px;
+    font-weight: 700;
+    border: none;
+}
+
+.carta{
+    position: absolute;
+    width: 120px;
+    height: 173px;
+}
+
+.carta-baraja{
+    position:relative;
+    height: 173px;
+    z-index: 1;
+}
+
+.carta-baraja img{
+    opacity: 90%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.arriba{
+    display: flex;
+    justify-content: space-around;
+}
+
+@property --angle{
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+  
+  .esp-carta::after, .esp-carta::before{
+    
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: conic-gradient(from var(--angle), #006aff, #e967bd, #f722a2, #9206b5,green,#217ceb,#006aff);
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: -1;
+    padding: 3px;
+    animation: 3s spin linear infinite;
+  }
+  .esp-carta::before{
+    filter: blur(1.5rem);
+    opacity: 0.5;
+  }
+  @keyframes spin{
+    from{
+      --angle: 0deg;
+    }
+    to{
+      --angle: 360deg;
+    }
+  }
+
+.esp-carta{
+    width: 120px;
+    height: 173px;
+    margin: 10px;
+    position: relative;
+}
+
+.esp-carta1{
+    border: 3px solid blueviolet;
+    width: 125px;
+    height: 179px;
+    margin: 10px;
+    position: relative;
+}
+
+.esp-carta2{
+    border: 3px solid blueviolet;
+    width: 120px;
+    height: 173px;
+    margin: 10px;
+    position: relative;
+}
+
+.mazo{
+    display: flex;
+}
+
+.hogar{
+    display:flex;
+    
+}
+
+.hogar img {
+    opacity: 85%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+   
+}
+
+.abajo{
+    display: flex;
+    justify-content: center;
+}
+
+.abajo img{
+    width: 100%;
+    object-fit: cover;
+}
+
+
+.posicion_inicial{
+    position:absolute;
+}
+
+#posicion_inicial img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
