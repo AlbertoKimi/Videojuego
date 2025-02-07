@@ -4,6 +4,7 @@
 let mazo = [];
 let mazoBarajado = [];
 let columna = [];
+let hogares = [[], [], [], []];
 let primerClick = null;
 
 const TIPOS = ["Co", "Di", "Tr", "Pi"];
@@ -85,6 +86,36 @@ const crearCartaFantasma = (columnaIndex) => {
     cartaFantasma.onclick = () => comprobarClick(cartaFantasma);
 
     return cartaFantasma;
+};
+
+const crearCartaFantasmaHogar = (hogarIndex) => {
+    const cartaFantasma = document.createElement("div");
+    cartaFantasma.classList.add("carta", "fantasma");
+    cartaFantasma.dataset.fantasma = "true";
+    cartaFantasma.dataset.hogar = hogarIndex;
+    cartaFantasma.style.width = '120px';
+    cartaFantasma.style.height = '170px';
+    /*cartaFantasma.style.display = 'inline-block';*/
+    cartaFantasma.style.top= '5px';
+    cartaFantasma.onclick = (event) => comprobarClick(event.currentTarget);
+    return cartaFantasma;
+};
+
+// Agrega cartas fantasma en cada hogar asegurando que se generen correctamente
+const agregarCartasFantasmaHogar = () => {
+    for (let i = 0; i < 4; i++) {
+        const hogar = document.querySelector(`#hogar-${i}`);
+        if (hogar) {
+            hogar.innerHTML = ''; // Limpiar el contenido del hogar para evitar duplicados
+            const imagen = document.createElement("img");
+            imagen.src = `Imagenes/AS_${TIPOS[i]}.webp`; // Restaurar imagen base del hogar
+            imagen.alt = `As de ${TIPOS[i]}`;
+            hogar.appendChild(imagen);
+            
+            const cartaFantasma = crearCartaFantasmaHogar(i);
+            hogar.appendChild(cartaFantasma);
+        }
+    }
 };
 
 //Coloca las cartas en el inicio
@@ -170,7 +201,7 @@ const comprobarClick = (carta) => {
         const pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
         const indiceCartaSeleccionada = pilaCartaSeleccionada.findIndex(
             c => {
-                console.log(carta,columna[Number(carta.dataset.pila)])
+                console.log(carta, columna[Number(carta.dataset.pila)])
                 return c.numero == carta.dataset.numero && c.tipo == carta.dataset.tipo;
             }
         );
@@ -248,6 +279,27 @@ const comprobarClick = (carta) => {
 
             ponerCartasColumna(); // Actualizar las pilas visualmente
         }
+        // Movimiento especial: Si el primerClick es un As (número 1) y el segundoClick es una carta fantasma de hogar
+        else  if (primerClick.dataset.numero === "1" && segundoClick.dataset.fantasma === "true" && segundoClick.dataset.hogar !== undefined) {
+            console.log("Moviendo As a hogar.");
+            
+            // Remover la carta del origen
+            for (let pila of columna) {
+                const indiceCarta = pila.findIndex(c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo);
+                if (indiceCarta !== -1) {
+                    const cartaAMover = pila.splice(indiceCarta, 1)[0];
+                    hogares[Number(segundoClick.dataset.hogar)].push(cartaAMover);
+                    const hogarDestino = document.querySelector(`#hogar-${segundoClick.dataset.hogar}`);
+                    if (hogarDestino) {
+                        hogarDestino.innerHTML = ''; // Limpiar hogar antes de agregar la nueva carta
+                        const nuevaCarta = crearCartaHTML(cartaAMover);
+                        hogarDestino.appendChild(nuevaCarta);
+                    }
+                    break;
+                }
+            }
+            ponerCartasColumna();
+        }
         else {
             console.warn("Movimiento no permitido. No cumple las reglas.");
             alert("No se puede realizar el movimiento");
@@ -283,6 +335,7 @@ if (botonEmpezar) {
         barajarMazo();
         darCartas();
         ponerCartasColumna();
+        agregarCartasFantasmaHogar();
         /*ponerCartasInicio();*/
     };
 } else {
