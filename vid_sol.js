@@ -1,265 +1,226 @@
-//Constantes y tipos
-
-let mazo = []
-let mazoBarajado = []
-let columna = []
+// =====================
+// VARIABLES GLOBALES
+// =====================
+let mazo = [];
+let mazoBarajado = [];
+let columna = [];
 let primerClick = null;
 
+const TIPOS = ["Co", "Di", "Tr", "Pi"];
+const COLORES = { Co: "rojo", Di: "rojo", Tr: "negro", Pi: "negro" };
 
-const tipos = ["Co", "Di", "Tr", "Pi"]
-const color = {
-    Co: "rojo",
-    Di: "rojo",
-    Tr: "negro",
-    Pi: "negro"
-}
-
-//Elementos html
-
+// =====================
+// ELEMENTOS DEL DOM
+// =====================
 const botonEmpezar = document.querySelector(".adelante");
-const inicial = document.querySelector("#posicion_inicial")
-const mazoBaraja = document.querySelector("#mazo-baraja"); //
+const inicial = document.querySelector("#posicion_inicial");
+const mazoBaraja = document.querySelector("#mazo-baraja");
 
+// =====================
+// FUNCIONES PRINCIPALES
+// =====================
 
-
-//Funciones
-
+// Crea el mazo de cartas
 const crearMazo = () => {
+    mazo = [];
     for (let i = 1; i <= 13; i++) {
-        for (let j = 0; j < tipos.length; j++) {
-            const carta = {
+        TIPOS.forEach(tipo => {
+            mazo.push({
                 numero: i,
-                color: color[tipos[j]],
-                tipo: tipos[j],
-                img: `${i}${tipos[j]}.png`,
-                estaVolteada: true,
-            }
-            mazo.push(carta)
-        }
+                color: COLORES[tipo],
+                tipo,
+                img: `${i}${tipo}.png`,
+                estaVolteada: true
+            });
+        });
     }
-}
+};
 
+// Baraja el mazo
 const barajarMazo = () => {
-    mazoBarajado = mazo.map(carta => ({ carta, sort: Math.random() }))
+    mazoBarajado = mazo
+        .map(carta => ({ carta, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
-        .map(({ carta }) => carta)
-}
+        .map(({ carta }) => carta);
+};
 
+// Reparte las cartas en las columnas del tablero
 const darCartas = () => {
+    columna = Array.from({ length: 7 }, () => []);
     for (let i = 0; i < 7; i++) {
-        columna.push([])
-        for (let j = 0; j < i + 1; j++) {
-            const primeraCartaMazo = mazoBarajado[0]
-            mazoBarajado.shift()
-            columna[i].push(primeraCartaMazo)
+        for (let j = 0; j <= i; j++) {
+            columna[i].push(mazoBarajado.shift());
         }
-
     }
-    console.log(mazoBarajado)
-    console.log(columna)
-}
+};
 
+// Crea un elemento HTML para una carta
 const crearCartaHTML = (carta) => {
-    const cartaHTML = document.createElement("div")
-    const foto = document.createElement("img")
-    if (carta.estaVolteada) {
-        foto.src = "Imagenes/Dorso.webp"
-    }
-    else {
-        foto.src = `Imagenes/Baraja/${carta.img}`
-    }
-    cartaHTML.dataset.numero = carta.numero
-    cartaHTML.dataset.color = carta.color
-    cartaHTML.dataset.tipo = carta.tipo
+    const cartaHTML = document.createElement("div");
+    const foto = document.createElement("img");
 
-    cartaHTML.classList.add("carta")
-    cartaHTML.appendChild(foto)
-    cartaHTML.onclick = () => {
-        comprobarClick(cartaHTML)
-    }
-    return cartaHTML
-}
+    foto.src = carta.estaVolteada ? "Imagenes/Dorso.webp" : `Imagenes/Baraja/${carta.img}`;
 
-// Función para crear una carta "fantasma" cuando la columna está vacía
+    cartaHTML.dataset.numero = carta.numero;
+    cartaHTML.dataset.color = carta.color;
+    cartaHTML.dataset.tipo = carta.tipo;
+    cartaHTML.classList.add("carta");
+    cartaHTML.appendChild(foto);
+    cartaHTML.onclick = () => comprobarClick(cartaHTML);
+
+    return cartaHTML;
+};
+
+// Crea una carta "fantasma" cuando la columna está vacía
 const crearCartaFantasma = (columnaIndex) => {
     const cartaFantasma = document.createElement("div");
     cartaFantasma.classList.add("carta");
     cartaFantasma.dataset.fantasma = true;
-    cartaFantasma.dataset.pila = columnaIndex; // Asociamos la columna
-    cartaFantasma.style.width = '100px'; // Añadimos un estilo visual (puedes ajustarlo)
+    cartaFantasma.dataset.pila = columnaIndex;
+    cartaFantasma.style.width = '100px';
     cartaFantasma.style.height = '140px';
-    cartaFantasma.style.backgroundColor = 'transparent'; // Deja la carta invisible
+    cartaFantasma.style.backgroundColor = 'transparent';
     cartaFantasma.onclick = () => comprobarClick(cartaFantasma);
+
     return cartaFantasma;
 };
 
-
-const ponerCartasInicio = () => {
-
-    for (let i = 0; i < mazoBarajado.length; i++) {
-        const carta = mazoBarajado[i];
-        const cartaHTML = crearCartaHTML(carta);
-        inicial.appendChild(cartaHTML);
-    }
-}
-
+// Coloca las cartas en las columnas del tablero
 const ponerCartasColumna = () => {
     for (let i = 0; i < columna.length; i++) {
         const pila = document.querySelector(`#pila-${i}`);
+        if (!pila) {
+            console.error(`No se encontró el elemento #pila-${i}`);
+            continue;
+        }
+
         pila.innerHTML = "";
 
-        if (pila) {
-            if (columna[i].length === 0) {
-                // Crear carta fantasma si la columna está vacía
-                const cartaFantasma = crearCartaFantasma(i);
-                pila.appendChild(cartaFantasma);
-            } else {
-                for (let j = 0; j < columna[i].length; j++) {
-                    const ultimaCartaPila = j === columna[i].length - 1;
-                    const carta = columna[i][j];
-                    if (ultimaCartaPila) {
-                        carta.estaVolteada = false;
-                    }
-                    const cartaHTML = crearCartaHTML(carta);
-                    cartaHTML.dataset.pila = i;
-                    cartaHTML.style.top = `${j * 33}px`;
-                    pila.appendChild(cartaHTML);
-                }
-            }
+        if (columna[i].length === 0) {
+            pila.appendChild(crearCartaFantasma(i));
         } else {
-            console.error(`No se encontró el elemento #pila-${i}`);
+            columna[i].forEach((carta, j) => {
+                if (j === columna[i].length - 1) carta.estaVolteada = false;
+                const cartaHTML = crearCartaHTML(carta);
+                cartaHTML.dataset.pila = i;
+                cartaHTML.style.top = `${j * 33}px`;
+                pila.appendChild(cartaHTML);
+            });
         }
     }
 };
 
-/*const comprobarClick = (carta) => {
-    if (primerClick) {
-        const segundoClick = carta;
-        if (primerClick.dataset.numero == segundoClick.dataset.numero - 1 && segundoClick.dataset.color !== primerClick.dataset.color) {
-            const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)]
-            const pilaSegundoCarta = columna[Number(segundoClick.dataset.pila)]
-            const primeraCartaObj = pilaPrimeraCarta.pop()
-            pilaSegundoCarta.push(primeraCartaObj)
-            ponerCartasColumna()
-        }
-        
-        else {
-            alert("no se puede realizar")
-        }
-        primerClick.style.border = "none";//
-        primerClick = null;//
-
-    }
-    else {
-        primerClick = carta
-        carta.style.border = "2px solid red"
-    }
-}*/
-
-/*const comprobarClick = (carta) => {//NUEVO FUNCIONA SIN MOVER REY PILA VACIA
-    if (primerClick) {
-        const segundoClick = carta;
-        const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
-        const pilaSegundoCarta = columna[Number(segundoClick.dataset.pila)];
-        const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(c => c.numero == primerClick.dataset.numero && c.color == primerClick.dataset.color);
-        
-        if (
-            indiceCartaSeleccionada !== -1 &&
-            primerClick.dataset.numero == segundoClick.dataset.numero - 1 &&
-            segundoClick.dataset.color !== primerClick.dataset.color
-        ) {
-            // Mover todas las cartas desde la seleccionada hasta la última
-            const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
-            pilaSegundoCarta.push(...cartasAMover);
-            
-            ponerCartasColumna();
-        } else {
-            alert("No se puede realizar el movimiento");
-        }
-        
-        primerClick.style.border = "none";
-        primerClick = null;
-    } else {
-        primerClick = carta;
-        carta.style.border = "2px solid red";
-    }
-};*/
-
-// Modificamos la lógica de comprobarClick para permitir el movimiento hacia columnas vacías
+// =====================
+// LÓGICA DE MOVIMIENTO
+// =====================
 const comprobarClick = (carta) => {
-    if (primerClick) {
+    console.log("Carta clickeada:", carta.dataset);
+
+    if (!primerClick) {
+        // PRIMER CLICK - SELECCIÓN
+        const pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
+        const indiceCartaSeleccionada = pilaCartaSeleccionada.findIndex(
+            c => c.numero === Number(carta.dataset.numero) && c.color === carta.dataset.color // Aquí convertimos carta.dataset.numero a un número
+        );
+
+        console.log("Intentando seleccionar carta en pila:", pilaCartaSeleccionada);
+        console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
+
+        // Verificar si la carta está volteada
+        if (indiceCartaSeleccionada === -1 || pilaCartaSeleccionada[indiceCartaSeleccionada].estaVolteada) {
+            console.warn("Intentaste seleccionar una carta volteada o inexistente.");
+            alert("No puedes seleccionar una carta volteada");
+            return;
+        }
+
+        primerClick = carta;
+        carta.style.border = "2px solid red";
+        console.log("Carta seleccionada correctamente:", primerClick.dataset);
+    } else {
+        // SEGUNDO CLICK - MOVIMIENTO
         const segundoClick = carta;
         const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
-        const pilaSegundoCarta = columna[Number(segundoClick.dataset.pila)];
+        const pilaSegundaCarta = columna[Number(segundoClick.dataset.pila)];
 
-        // Verificamos el movimiento normal para las demás cartas
-        const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(c => c.numero == primerClick.dataset.numero && c.color == primerClick.dataset.color);
+        console.log("Primer click (origen):", primerClick.dataset);
+        console.log("Segundo click (destino):", segundoClick.dataset);
+        console.log("Pila origen antes de mover:", pilaPrimeraCarta);
+        console.log("Pila destino antes de mover:", pilaSegundaCarta);
+
+        // Obtener el índice real de la carta en la pila
+        const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(
+            c => c.numero === Number(primerClick.dataset.numero) && c.color === primerClick.dataset.color // Aquí también convertimos a número
+        );
+
+        console.log("Índice de la carta seleccionada en la pila:", indiceCartaSeleccionada);
+
+        // Validar si la carta se puede mover sobre otra carta
         if (
             indiceCartaSeleccionada !== -1 &&
-            primerClick.dataset.numero == segundoClick.dataset.numero - 1 &&
+            Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
             segundoClick.dataset.color !== primerClick.dataset.color
         ) {
             // Mover todas las cartas desde la seleccionada hasta la última
             const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
-            pilaSegundoCarta.push(...cartasAMover);
-            ponerCartasColumna();
-        } 
-         // Si el primerClick es una carta 13
-        else if(primerClick.dataset.numero == 13) {
-            // Si el segundo click es sobre una columna vacía (carta fantasma)
-            if (segundoClick.dataset.fantasma !== undefined) {
-                // Mover toda la pila de cartas desde la carta 13 hasta la última carta en esa pila
-                const indiceRey = pilaPrimeraCarta.findIndex(c => c.numero == 13);
-                const cartasAMover = pilaPrimeraCarta.splice(indiceRey);
-                pilaSegundoCarta.push(...cartasAMover);
-                ponerCartasColumna();
+            console.log("Cartas a mover:", cartasAMover);
+
+            pilaSegundaCarta.push(...cartasAMover);
+
+            // Voltear la nueva última carta de la columna de origen, si existe
+            if (pilaPrimeraCarta.length > 0) {
+                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
+                console.log("Volteando la nueva última carta en la pila de origen:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
             }
+
+            ponerCartasColumna();
+        }
+        // Movimiento especial: Rey a una columna vacía
+        else if (Number(primerClick.dataset.numero) === 13 && segundoClick.dataset.fantasma !== undefined) {
+            console.log("Moviendo Rey a una columna vacía.");
+            const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
+            pilaSegundaCarta.push(...cartasAMover);
+
+            if (pilaPrimeraCarta.length > 0) {
+                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
+                console.log("Volteando la nueva última carta después de mover el Rey:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
+            }
+
+            ponerCartasColumna();
         }
         else {
+            console.warn("Movimiento no permitido. No cumple las reglas.");
             alert("No se puede realizar el movimiento");
         }
 
-        primerClick.style.border = "none"; // Quitar el borde
-        primerClick = null; // Resetea primerClick
-    } else {
-        primerClick = carta;
-        carta.style.border = "2px solid red";
+        resetearSeleccion();
     }
 };
 
 
+// Función para restablecer la selección
+const resetearSeleccion = () => {
+    if (primerClick) primerClick.style.border = "none";
+    primerClick = null;
+};
 
+
+
+// =====================
+// EVENTOS
+// =====================
 if (botonEmpezar) {
     botonEmpezar.onclick = () => {
-
-        // Reiniciar las variables antes de crear el mazo
-        mazo = []
-        mazoBarajado = []
-        columna = []
+        // Reiniciar variables y tablero
+        mazo = [];
+        mazoBarajado = [];
+        columna = [];
         primerClick = null;
 
-        // Volver a generar el mazo y repartir cartas
         crearMazo();
         barajarMazo();
         darCartas();
         ponerCartasColumna();
-        ponerCartasInicio();
-
-
-
-
-
-        // Limpiar la interfaz (opcional)
-        /*inicial.innerHTML = ""
-        for (let i = 0; i < 7; i++) {
-            const pila = document.querySelector(`#pila-${i}`);
-            if (pila) {
-                pila.innerHTML = "";
-            }
-        }*/
-
-
-    }
+    };
 } else {
     console.error("No se encontró el botón con la clase .adelante");
 }
