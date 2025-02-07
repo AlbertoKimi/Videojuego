@@ -52,6 +52,8 @@ const darCartas = () => {
             columna[i].push(mazoBarajado.shift());
         }
     }
+    console.log(mazo);
+    console.log(mazoBarajado);
 };
 
 // Crea un elemento HTML para una carta
@@ -151,6 +153,7 @@ const ponerCartasColumna = () => {
             });
         }
     }
+    console.log(columna);
 };
 
 
