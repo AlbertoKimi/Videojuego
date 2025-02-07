@@ -7,8 +7,8 @@ let columna = [];
 let hogares = [[], [], [], []];
 let primerClick = null;
 
-const TIPOS = ["Co", "Di", "Tr", "Pi"];
-const COLORES = { Co: "rojo", Di: "rojo", Tr: "negro", Pi: "negro" };
+const TIPOS = ["Co", "Tr", "Di", "Pi"];
+const COLORES = { Co: "rojo", Tr: "negro", Di: "rojo", Pi: "negro" };
 
 // =====================
 // ELEMENTOS DEL DOM
