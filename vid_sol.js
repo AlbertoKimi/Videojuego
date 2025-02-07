@@ -160,89 +160,8 @@ const ponerCartasColumna = () => {
 // =====================
 // LÓGICA DE MOVIMIENTO
 // =====================
-/*const comprobarClick = (carta) => {
-    console.log("Carta clickeada:", carta.dataset);
 
-    if (!primerClick) {
-        // PRIMER CLICK - SELECCIÓN
-        const pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
-        const indiceCartaSeleccionada = pilaCartaSeleccionada.findIndex(
-            c => c.numero === Number(carta.dataset.numero) && c.color === carta.dataset.color // Aquí convertimos carta.dataset.numero a un número
-        );
-
-        console.log("Intentando seleccionar carta en pila:", pilaCartaSeleccionada);
-        console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
-
-        // Verificar si la carta está volteada
-        if (indiceCartaSeleccionada === -1 || pilaCartaSeleccionada[indiceCartaSeleccionada].estaVolteada) {
-            console.warn("Intentaste seleccionar una carta volteada o inexistente.");
-            alert("No puedes seleccionar una carta volteada");
-            return;
-        }
-
-        primerClick = carta;
-        carta.style.border = "2px solid red";
-        console.log("Carta seleccionada correctamente:", primerClick.dataset);
-    } else {
-        // SEGUNDO CLICK - MOVIMIENTO
-        const segundoClick = carta;
-        const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
-        const pilaSegundaCarta = columna[Number(segundoClick.dataset.pila)];
-
-        console.log("Primer click (origen):", primerClick.dataset);
-        console.log("Segundo click (destino):", segundoClick.dataset);
-        console.log("Pila origen antes de mover:", pilaPrimeraCarta);
-        console.log("Pila destino antes de mover:", pilaSegundaCarta);
-
-        // Obtener el índice real de la carta en la pila
-        const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(
-            c => c.numero === Number(primerClick.dataset.numero) && c.color === primerClick.dataset.color // Aquí también convertimos a número
-        );
-
-        console.log("Índice de la carta seleccionada en la pila:", indiceCartaSeleccionada);
-
-        // Validar si la carta se puede mover sobre otra carta
-        if (
-            indiceCartaSeleccionada !== -1 &&
-            Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
-            segundoClick.dataset.color !== primerClick.dataset.color
-        ) {
-            // Mover todas las cartas desde la seleccionada hasta la última
-            const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
-            console.log("Cartas a mover:", cartasAMover);
-
-            pilaSegundaCarta.push(...cartasAMover);
-
-            // Voltear la nueva última carta de la columna de origen, si existe
-            if (pilaPrimeraCarta.length > 0) {
-                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
-                console.log("Volteando la nueva última carta en la pila de origen:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
-            }
-
-            ponerCartasColumna();
-        }
-        // Movimiento especial: Rey a una columna vacía
-        else if (Number(primerClick.dataset.numero) === 13 && segundoClick.dataset.fantasma !== undefined) {
-            console.log("Moviendo Rey a una columna vacía.");
-            const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
-            pilaSegundaCarta.push(...cartasAMover);
-
-            if (pilaPrimeraCarta.length > 0) {
-                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
-                console.log("Volteando la nueva última carta después de mover el Rey:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
-            }
-
-            ponerCartasColumna();
-        }
-        else {
-            console.warn("Movimiento no permitido. No cumple las reglas.");
-            alert("No se puede realizar el movimiento");
-        }
-
-        resetearSeleccion();
-    }
-};*/
-
+//Mover cartas en la parte de abajo
 const comprobarClick = (carta) => {
     console.log("Carta clickeada:", carta.dataset);
 
@@ -250,14 +169,19 @@ const comprobarClick = (carta) => {
         // PRIMER CLICK - SELECCIÓN
         const pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
         const indiceCartaSeleccionada = pilaCartaSeleccionada.findIndex(
-            c => c.numero == carta.dataset.numero && c.color == carta.dataset.color
+            c => {
+                console.log(carta,columna[Number(carta.dataset.pila)])
+                return c.numero == carta.dataset.numero && c.tipo == carta.dataset.tipo;
+            }
         );
-
+        console.log(columna);
         console.log("Intentando seleccionar carta en pila:", pilaCartaSeleccionada);
         console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
 
         // Verificar si la carta está volteada
         if (indiceCartaSeleccionada === -1 || pilaCartaSeleccionada[indiceCartaSeleccionada].estaVolteada) {
+            console.log(columna);
+            console.log(primerClick);
             console.warn("Intentaste seleccionar una carta volteada o inexistente.");
             alert("No puedes seleccionar una carta volteada");
             return;
@@ -280,7 +204,7 @@ const comprobarClick = (carta) => {
 
         // Obtener el índice real de la carta en la pila de origen
         const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(
-            c => c.numero == primerClick.dataset.numero && c.color == primerClick.dataset.color
+            c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo
         );
 
         console.log("Índice de la carta seleccionada en la pila:", indiceCartaSeleccionada);
@@ -289,7 +213,7 @@ const comprobarClick = (carta) => {
         if (
             indiceCartaSeleccionada !== -1 &&
             Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
-            segundoClick.dataset.color !== primerClick.dataset.color
+            segundoClick.dataset.tipo !== primerClick.dataset.tipo
         ) {
             // Mover todas las cartas desde la seleccionada hasta la última
             const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada); // Todas las cartas a partir de la seleccionada
