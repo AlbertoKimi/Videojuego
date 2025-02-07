@@ -192,21 +192,6 @@ const comprobarClick = (carta) => {
         const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
         const pilaSegundoCarta = columna[Number(segundoClick.dataset.pila)];
 
-        // Si el primerClick es una carta 13 y tiene cartas encima
-        if (primerClick.dataset.numero == 13 && pilaPrimeraCarta.length > 1) {
-            // Si el segundo click es sobre una columna vacía (carta fantasma)
-            if (segundoClick.dataset.fantasma !== undefined) {
-                // Mover toda la pila de cartas desde la carta 13 hasta la última carta en esa pila
-                const cartasAMover = pilaPrimeraCarta.splice(pilaPrimeraCarta.findIndex(c => c.numero === 13)); // Eliminar desde el 13 hasta el final
-                columna[Number(segundoClick.dataset.pila)].push(...cartasAMover); // Mover las cartas a la columna vacía
-
-                ponerCartasColumna(); // Actualiza la visualización de las pilas
-                primerClick.style.border = "none"; // Quita el borde
-                primerClick = null; // Resetea primerClick
-                return;  // Salir de la función
-            }
-        }
-
         // Verificamos el movimiento normal para las demás cartas
         const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(c => c.numero == primerClick.dataset.numero && c.color == primerClick.dataset.color);
         if (
@@ -218,7 +203,19 @@ const comprobarClick = (carta) => {
             const cartasAMover = pilaPrimeraCarta.splice(indiceCartaSeleccionada);
             pilaSegundoCarta.push(...cartasAMover);
             ponerCartasColumna();
-        } else {
+        } 
+         // Si el primerClick es una carta 13
+        else if(primerClick.dataset.numero == 13) {
+            // Si el segundo click es sobre una columna vacía (carta fantasma)
+            if (segundoClick.dataset.fantasma !== undefined) {
+                // Mover toda la pila de cartas desde la carta 13 hasta la última carta en esa pila
+                const indiceRey = pilaPrimeraCarta.findIndex(c => c.numero == 13);
+                const cartasAMover = pilaPrimeraCarta.splice(indiceRey);
+                pilaSegundoCarta.push(...cartasAMover);
+                ponerCartasColumna();
+            }
+        }
+        else {
             alert("No se puede realizar el movimiento");
         }
 
@@ -266,6 +263,3 @@ if (botonEmpezar) {
 } else {
     console.error("No se encontró el botón con la clase .adelante");
 }
-
-
-
