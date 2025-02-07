@@ -197,13 +197,15 @@ const comprobarClick = (carta) => {
 };
 
 
-// Función para restablecer la selección
+// =====================
+// FUNCIONES AUXILIARES
+// =====================
+
+// Restablece la selección de cartas
 const resetearSeleccion = () => {
     if (primerClick) primerClick.style.border = "none";
     primerClick = null;
 };
-
-
 
 // =====================
 // EVENTOS
@@ -224,3 +226,6 @@ if (botonEmpezar) {
 } else {
     console.error("No se encontró el botón con la clase .adelante");
 }
+
+
+
