@@ -315,8 +315,8 @@ else if (pilaOrigen && hogarIndex !== -1) {
             hogarElemento.appendChild(nuevaCartaHTML);
 
             // Agregar carta fantasma nuevamente para permitir más movimientos
-            const cartaFantasma = crearCartaFantasmaHogar(hogarIndex);
-            hogarElemento.appendChild(cartaFantasma);
+            /*const cartaFantasma = crearCartaFantasmaHogar(hogarIndex);
+            hogarElemento.appendChild(cartaFantasma);*/
         }
 
         // ✅ **Si la pila de origen aún tiene cartas, voltear la última**
@@ -384,7 +384,7 @@ else if (pilaOrigen && hogarIndex !== -1) {
                 const nuevaCartaHTML = crearCartaHTML(cartaAMover);
                 hogarElemento.appendChild(nuevaCartaHTML);
             }
-        
+            console.log(hogares);
             ponerCartasColumna(); // Actualizar las pilas visualmente
         }
         else {
