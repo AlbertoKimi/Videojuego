@@ -270,7 +270,7 @@ const comprobarClick = (carta) => {
         if (
             indiceCartaSeleccionada !== -1 &&
             Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
-            segundoClick.dataset.tipo !== primerClick.dataset.tipo //CORREGIR--> PUEDO MOVER DISTINTO TIPO E IGUAL COLOR
+            segundoClick.dataset.tipo !== primerClick.dataset.tipo && segundoClick.dataset.color !== primerClick.dataset.color//CORREGIR--> PUEDO MOVER DISTINTO TIPO E IGUAL COLOR
         ) {
             // Mover todas las cartas desde la seleccionada hasta la última
             const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada); // Todas las cartas a partir de la seleccionada
