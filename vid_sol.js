@@ -15,7 +15,7 @@ const COLORES = { Co: "rojo", Tr: "negro", Di: "rojo", Pi: "negro" };
 // =====================
 const botonEmpezar = document.querySelector(".adelante");
 const inicial = document.querySelector("#posicion_inicial");
-const mazoBaraja = document.querySelector("#mazo-baraja");
+const mazoBaraja = document.querySelector(".carta-baraja");
 
 // =====================
 // FUNCIONES PRINCIPALES
@@ -54,7 +54,8 @@ const darCartas = () => {
         }
     }
     console.log(mazo);
-    console.log(mazoBarajado);
+    console.log("Creado mazo barajado:" , mazoBarajado);
+    
 };
 
 // Crea un elemento HTML para una carta
@@ -127,14 +128,48 @@ const crearPilasHogar = () => {
 };
 
 //Coloca las cartas en el inicio
-/*const ponerCartasInicio = () => {
+const ponerCartasInicio = () => {
 
     for (let i = 0; i < mazoBarajado.length; i++) {
         const carta = mazoBarajado[i];
         const cartaHTML = crearCartaHTML(carta);
         inicial.appendChild(cartaHTML);
     }
-}*/
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const mazoBaraja = document.querySelector(".carta-baraja");
+
+    if (mazoBaraja) {
+        mazoBaraja.addEventListener("click", () => {
+            if (mazoBarajado.length === 0) {
+                console.warn("El mazo está vacío.");
+                return;
+            }
+
+            // Tomar la primera carta del mazo barajado
+            const cartaMovida = mazoBarajado.shift();
+            cartaMovida.estaVolteada = false; // Asegurar que se voltee al moverse
+
+            // Obtener el contenedor donde se mostrará la carta
+            const espacioSeleccionado = document.querySelector("#c_seleccionada");
+
+            if (espacioSeleccionado) {
+                espacioSeleccionado.innerHTML = ""; // Limpiar espacio anterior
+                const cartaHTML = crearCartaHTML(cartaMovida);
+                espacioSeleccionado.appendChild(cartaHTML);
+            } else {
+                console.error("No se encontró el contenedor 'c_seleccionada'.");
+            }
+
+            console.log("Carta movida a esp-carta2:", cartaMovida);
+        });
+    } else {
+        console.error("No se encontró el mazo para barajar.");
+    }
+});
+
+
 
 // Coloca las cartas en las columnas del tablero
 /*const ponerCartasColumna = () => {
@@ -192,7 +227,7 @@ const ponerCartasColumna = () => {
             });
         }
     }
-    console.log(columna);
+    console.log("Creado mazo columna:" , columna);
 };
 
 
@@ -453,7 +488,7 @@ if (botonEmpezar) {
         ponerCartasColumna();
         agregarCartasFantasmaHogar();
         crearPilasHogar();
-        /*ponerCartasInicio();*/
+        ponerCartasInicio();
     };
 } else {
     console.error("No se encontró el botón con la clase .adelante");

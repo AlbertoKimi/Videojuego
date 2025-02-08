@@ -104,6 +104,12 @@ body {
     position: relative;
 }
 
+#c_seleccionada img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Mantiene la proporción dentro del div */
+}
+
 .mazo{
     display: flex;
 }
