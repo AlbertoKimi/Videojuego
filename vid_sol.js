@@ -4,6 +4,7 @@
 let mazo = [];
 let mazoBarajado = [];
 let columna = [];
+let seleccionar = [];
 let hogares = [[], [], [], []];
 let primerClick = null;
 
@@ -137,37 +138,42 @@ const ponerCartasInicio = () => {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const mazoBaraja = document.querySelector(".carta-baraja");
+const moverACartasSeleccionadas = (carta) => {
+    seleccionar.push(carta); // Agregar la carta seleccionada al array seleccionar
+    console.log("Carta seleccionada y añadida a 'seleccionar':", carta);
+    console.log("Mazo seleccionar ", seleccionar);
+};
 
-    if (mazoBaraja) {
-        mazoBaraja.addEventListener("click", () => {
-            if (mazoBarajado.length === 0) {
-                console.warn("El mazo está vacío.");
-                return;
-            }
-
-            // Tomar la primera carta del mazo barajado
-            const cartaMovida = mazoBarajado.shift();
-            cartaMovida.estaVolteada = false; // Asegurar que se voltee al moverse
-
-            // Obtener el contenedor donde se mostrará la carta
-            const espacioSeleccionado = document.querySelector("#c_seleccionada");
-
-            if (espacioSeleccionado) {
-                espacioSeleccionado.innerHTML = ""; // Limpiar espacio anterior
-                const cartaHTML = crearCartaHTML(cartaMovida);
-                espacioSeleccionado.appendChild(cartaHTML);
-            } else {
-                console.error("No se encontró el contenedor 'c_seleccionada'.");
-            }
-
-            console.log("Carta movida a esp-carta2:", cartaMovida);
-        });
-    } else {
-        console.error("No se encontró el mazo para barajar.");
+// Seleccionar carta al hacer clic en mazoBarajado
+mazoBaraja.addEventListener("click", () => {
+    if (mazoBarajado.length === 0) {
+        console.warn("El mazo está vacío.");
+        return;
     }
+
+    // Tomar la primera carta del mazo barajado
+    const cartaMovida = mazoBarajado.shift();
+    cartaMovida.estaVolteada = false; // Asegurar que se voltee al moverse
+
+    // Mover la carta seleccionada al array 'seleccionar'
+    moverACartasSeleccionadas(cartaMovida);
+
+    // Obtener el contenedor donde se mostrará la carta
+    const espacioSeleccionado = document.querySelector("#c_seleccionada");
+
+    if (espacioSeleccionado) {
+        espacioSeleccionado.innerHTML = ""; // Limpiar espacio anterior
+        const cartaHTML = crearCartaHTML(cartaMovida);
+        espacioSeleccionado.appendChild(cartaHTML);
+    } else {
+        console.error("No se encontró el contenedor 'c_seleccionada'.");
+    }
+
+    console.log("Carta movida a 'c_seleccionada':", cartaMovida);
+    console.log("Mazo seleccionar ", seleccionar);
 });
+
+
 
 
 
@@ -479,6 +485,7 @@ if (botonEmpezar) {
         mazo = [];
         mazoBarajado = [];
         columna = [];
+        seleccionar = [];
         hogares = [[], [], [], []];
         primerClick = null;
 
