@@ -485,6 +485,11 @@ if (botonEmpezar) {
         mazo = [];
         mazoBarajado = [];
         columna = [];
+        // Limpiar la carta seleccionada visualmente
+        const espacioSeleccionado = document.querySelector("#c_seleccionada");
+        if (espacioSeleccionado) {
+            espacioSeleccionado.innerHTML = "";
+        }
         seleccionar = [];
         hogares = [[], [], [], []];
         primerClick = null;
