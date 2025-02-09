@@ -44,6 +44,7 @@ const barajarMazo = () => {
         .map(carta => ({ carta, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(({ carta }) => carta);
+
 };
 
 // Reparte las cartas en las columnas del tablero
@@ -76,6 +77,36 @@ const crearCartaHTML = (carta) => {
     return cartaHTML;
 };
 
+const crearCartaFantasma1 = () => {
+    const cartaFantasma = document.createElement("div");
+    cartaFantasma.classList.add("carta", "fantasma"); // Asegúrate de tener estilos para .fantasma
+    cartaFantasma.style.width = '120px';
+    cartaFantasma.style.height = '173px';
+    cartaFantasma.style.opacity= '100%'
+    // Crear el elemento de imagen
+    const imagen = document.createElement("img");
+    imagen.src = 'Imagenes/rein.webp'; // Asegúrate de que la ruta de la imagen sea correcta
+    imagen.alt = "Carta Fantasma"; // Texto alternativo para la imagen
+    imagen.style.width = '100%'; // Ajustar el tamaño de la imagen al contenedor
+    imagen.style.height = '100%'; // Ajustar el tamaño de la imagen al contenedor
+    imagen.style.objectFit = 'cover'; // Asegura que la imagen cubra el contenedor
+
+    // Agregar la imagen al contenedor de la carta fantasma
+    cartaFantasma.appendChild(imagen);
+     // Agregar evento de clic a la carta fantasma
+     cartaFantasma.onclick = () => {
+        moverCartasDeSeleccionadasAInicio(); // Mueve las cartas al hacer clic en la carta fantasma
+         // Limpiar la carta seleccionada visualmente
+         const espacioSeleccionado = document.querySelector("#c_seleccionada");
+         if (espacioSeleccionado) {
+             espacioSeleccionado.innerHTML = "";
+         }
+        cartaFantasma.remove(); // Elimina la carta fantasma del DOM
+    }
+
+    return cartaFantasma;
+};
+
 // Crea una carta "fantasma" cuando la columna está vacía
 const crearCartaFantasma = (columnaIndex) => {
     const cartaFantasma = document.createElement("div");
@@ -96,7 +127,8 @@ const crearCartaFantasmaHogar = (hogarIndex) => {
     cartaFantasma.dataset.fantasma = "true";
     cartaFantasma.dataset.hogar = hogarIndex;
     cartaFantasma.style.width = '120px';
-    cartaFantasma.style.height = '170px';
+    cartaFantasma.style.height = '173px';
+    cartaFantasma.style.opacity= '100%'
     /*cartaFantasma.style.display = 'inline-block';*/
     cartaFantasma.style.top = '5px';
     cartaFantasma.onclick = () => comprobarClick(cartaFantasma);
@@ -129,6 +161,7 @@ const crearPilasHogar = () => {
 };
 
 //Coloca las cartas en el inicio
+
 const ponerCartasInicio = () => {
 
     for (let i = 0; i < mazoBarajado.length; i++) {
@@ -138,17 +171,43 @@ const ponerCartasInicio = () => {
     }
 }
 
+// Función para mover todas las cartas de seleccionar a mazoBarajado
+const moverCartasDeSeleccionadasAInicio = () => {
+    if (seleccionar.length > 0) { // Verifica que haya cartas para mover
+        mazoBarajado.push(...seleccionar); // Mueve todas las cartas al mazo barajado
+        seleccionar = []; // Limpia la pila de selección
+        console.log("Cartas movidas al mazo barajado:", mazoBarajado);
+    } else {
+        console.warn("No hay cartas en la pila de selección para mover.");
+    }
+};
+
+// Ejemplo de uso
+// Llama a esta función cuando necesites mover las cartas, por ejemplo, al hacer clic en la carta fantasma
+const cartaFantasma = document.createElement("div");
+cartaFantasma.onclick = () => {
+    moverCartasSeleccionadas(); // Mueve las cartas al hacer clic en la carta fantasma
+    cartaFantasma.remove(); // Elimina la carta fantasma del DOM
+};
+
 const moverACartasSeleccionadas = (carta) => {
     seleccionar.push(carta); // Agregar la carta seleccionada al array seleccionar
     console.log("Carta seleccionada y añadida a 'seleccionar':", carta);
     console.log("Mazo seleccionar ", seleccionar);
 };
 
+
 // Seleccionar carta al hacer clic en mazoBarajado
 mazoBaraja.addEventListener("click", () => {
     if (mazoBarajado.length === 0) {
         console.warn("El mazo está vacío.");
+        console.log(mazoBarajado);
+        mazoBaraja.innerHTML="";
+        // Limpiar el contenido
+        const cartaFantasma = crearCartaFantasma1(); // Crear la carta fantasma
+        mazoBaraja.appendChild(cartaFantasma); // Agregar la carta fantasma al contenedor
         return;
+        
     }
 
     // Tomar la primera carta del mazo barajado
@@ -169,12 +228,9 @@ mazoBaraja.addEventListener("click", () => {
         console.error("No se encontró el contenedor 'c_seleccionada'.");
     }
 
-    console.log("Carta movida a 'c_seleccionada':", cartaMovida);
-    console.log("Mazo seleccionar ", seleccionar);
+    /*console.log("Carta movida a 'c_seleccionada':", cartaMovida);*/
+    console.log("Mazo Barajado ", mazoBarajado);
 });
-
-
-
 
 
 // Coloca las cartas en las columnas del tablero
@@ -490,6 +546,11 @@ if (botonEmpezar) {
         if (espacioSeleccionado) {
             espacioSeleccionado.innerHTML = "";
         }
+         // Limpiar la imagen reiniciar
+         const dorso = document.querySelector(".carta-baraja");
+         if (dorso) {
+             dorso.innerHTML = "";
+         }
         seleccionar = [];
         hogares = [[], [], [], []];
         primerClick = null;
