@@ -303,10 +303,16 @@ const comprobarClick = (carta) => {
 
     if (!primerClick) {
         // PRIMER CLICK - SELECCIÓN
-        const pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
+        let pilaCartaSeleccionada = [];
+        if (carta.parentElement.id === "c_seleccionada") {
+            pilaCartaSeleccionada = seleccionar;
+        } else {
+            pilaCartaSeleccionada = columna[Number(carta.dataset.pila)];
+        }
+
         const indiceCartaSeleccionada = pilaCartaSeleccionada.findIndex(
             c => {
-                console.log(carta, columna[Number(carta.dataset.pila)])
+                console.log(carta, pilaCartaSeleccionada);
                 return c.numero == carta.dataset.numero && c.tipo == carta.dataset.tipo;
             }
         );
@@ -329,11 +335,30 @@ const comprobarClick = (carta) => {
         console.log("Carta seleccionada correctamente:", primerClick.dataset);
     } else {
         // SEGUNDO CLICK - MOVIMIENTO
+        console.log("Mazo seleccionar antes de mover:", seleccionar);
+        // Verificar si el primerClick es de seleccionar
+        if (primerClick.parentElement.id === "c_seleccionada") {
+            console.log("El primer click es de seleccionar.");
+            // Aquí puedes agregar la lógica adicional si es necesario
+        }
+
         const segundoClick = carta;
-        const pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
-        const pilaSegundaCarta = columna[Number(segundoClick.dataset.pila)];
+        let pilaPrimeraCarta = [];
+        let pilaSegundaCarta = [];
         let pilaOrigen = null;
         let columnaIndex = -1;
+
+        if (primerClick.parentElement.id === "c_seleccionada") {
+            pilaPrimeraCarta = seleccionar;
+        } else {
+            pilaPrimeraCarta = columna[Number(primerClick.dataset.pila)];
+        }
+
+        if (segundoClick.dataset.pila !== undefined) {
+            pilaSegundaCarta = columna[Number(segundoClick.dataset.pila)];
+        } else if (segundoClick.dataset.hogar !== undefined) {
+            pilaSegundaCarta = hogares[Number(segundoClick.dataset.hogar)];
+        }
 
         columna.forEach((pila, index) => {
             if (pila.some(c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo)) {
@@ -350,18 +375,19 @@ const comprobarClick = (carta) => {
             }
         });
 
+        // Obtener el índice de la carta del primer click independientemente si es del array seleccionar o columna
+        let indiceCartaSeleccionada = -1;
+        if (primerClick.parentElement.id === "c_seleccionada") {
+            indiceCartaSeleccionada = seleccionar.findIndex(
+                c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo
+            );
+        } else {
+            indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(
+                c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo
+            );
+        }
 
-        console.log("Primer click (origen):", primerClick.dataset);
-        console.log("Segundo click (destino):", segundoClick.dataset);
-        console.log("Pila origen antes de mover:", pilaPrimeraCarta);
-        console.log("Pila destino antes de mover:", pilaSegundaCarta);
-
-        // Obtener el índice real de la carta en la pila de origen
-        const indiceCartaSeleccionada = pilaPrimeraCarta.findIndex(
-            c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo
-        );
-
-        console.log("Índice de la carta seleccionada en la pila:", indiceCartaSeleccionada);
+        console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
 
         // Validar si la carta se puede mover sobre otra carta
         if (
@@ -369,14 +395,33 @@ const comprobarClick = (carta) => {
             Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
             segundoClick.dataset.tipo !== primerClick.dataset.tipo && segundoClick.dataset.color !== primerClick.dataset.color//CORREGIR--> PUEDO MOVER DISTINTO TIPO E IGUAL COLOR
         ) {
-            // Mover todas las cartas desde la seleccionada hasta la última
-            const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada); // Todas las cartas a partir de la seleccionada
-            console.log("Cartas a mover:", cartasAMover);
+            // Mover la carta seleccionada
+            const cartaAMover = pilaPrimeraCarta[indiceCartaSeleccionada];
+            console.log("Carta a mover:", cartaAMover);
 
-            pilaSegundaCarta.push(...cartasAMover);
+            pilaSegundaCarta.push(cartaAMover);
 
-            // Eliminar las cartas movidas de la pila original
-            pilaPrimeraCarta.splice(indiceCartaSeleccionada);
+            // Eliminar la carta movida de la pila original
+            pilaPrimeraCarta.splice(indiceCartaSeleccionada, 1);
+
+            // Si el primerClick es de seleccionar, quitar la carta de seleccionar
+            if (primerClick.parentElement.id === "c_seleccionada") {
+                seleccionar.splice(indiceCartaSeleccionada, 1);
+                
+                console.log("Se ha movido la carta de seleccionar:", seleccionar);
+
+                // Limpiar visualmente la carta que queda en seleccionar
+                const espacioSeleccionado = document.querySelector("#c_seleccionada");
+                if (espacioSeleccionado) {
+                    espacioSeleccionado.innerHTML = "";
+
+                    // Mostrar la carta de abajo si la tuviera
+                    if (seleccionar.length > 0) {
+                        const nuevaCartaHTML = crearCartaHTML(seleccionar[seleccionar.length - 1]);
+                        espacioSeleccionado.appendChild(nuevaCartaHTML);
+                    }
+                }
+            }
 
             // Voltear la nueva última carta de la columna de origen, si existe
             if (pilaPrimeraCarta.length > 0) {
@@ -430,8 +475,56 @@ else if (pilaOrigen && hogarIndex !== -1) {
     ponerCartasColumna(); // Actualizar las pilas visualmente
 
         }
+        //REVISAR AQUÍ!!!
+        
+        // Mover carta de seleccionar a hogar
+        else if (primerClick.parentElement.id === "c_seleccionada" && segundoClick.dataset.hogar !== undefined) {
+            const hogarIndex = Number(segundoClick.dataset.hogar);
+            const cartaSeleccionada = seleccionar[indiceCartaSeleccionada];
+            const hogarDestino = hogares[hogarIndex];
 
+            // Validar si la carta puede moverse al hogar
+            if (
+                (hogarDestino.length === 0 && cartaSeleccionada.numero === 1) || // Permitir Ases en pilas vacías
+                (hogarDestino.length > 0 &&
+                    cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
+                    cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo)
+            ) {
+                // Mover la carta al hogar
+                seleccionar.splice(indiceCartaSeleccionada, 1);
+                cartaSeleccionada.estaVolteada = false; // Asegurar que la carta se voltee
+                hogarDestino.push(cartaSeleccionada);
 
+                // ✅ **Actualizar visualmente el hogar**
+                const hogarElemento = document.querySelector(`#hogar-${hogarIndex}`);
+                if (hogarElemento) {
+                    hogarElemento.innerHTML = ""; // Limpiar hogar antes de agregar la nueva carta
+                    const nuevaCartaHTML = crearCartaHTML(cartaSeleccionada); // Crear carta con datos reales
+                    hogarElemento.appendChild(nuevaCartaHTML);
+
+                    // Agregar carta fantasma nuevamente para permitir más movimientos
+                    /*const cartaFantasma = crearCartaFantasmaHogar(hogarIndex);
+                    hogarElemento.appendChild(cartaFantasma);*/
+                }
+
+                // Limpiar visualmente la carta que queda en seleccionar
+                const espacioSeleccionado = document.querySelector("#c_seleccionada");
+                if (espacioSeleccionado) {
+                    espacioSeleccionado.innerHTML = "";
+
+                    // Mostrar la carta de abajo si la tuviera
+                    if (seleccionar.length > 0) {
+                        const nuevaCartaHTML = crearCartaHTML(seleccionar[seleccionar.length - 1]);
+                        espacioSeleccionado.appendChild(nuevaCartaHTML);
+                    }
+                }
+
+                console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
+                console.log(hogares);
+            } else {
+                console.log("Movimiento no permitido. No cumple las reglas.");
+            }
+        }
 
         // Movimiento especial: Rey a una columna vacía
         else if (Number(primerClick.dataset.numero) === 13 && segundoClick.dataset.fantasma !== undefined) {
