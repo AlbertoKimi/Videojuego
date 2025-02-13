@@ -508,6 +508,25 @@ else if (pilaOrigen && hogarIndex !== -1) {
             // Eliminar las cartas movidas de la pila original
             pilaPrimeraCarta.splice(indiceCartaSeleccionada, cartasAMover.length);
 
+            // Si el primerClick es de seleccionar, quitar la carta de seleccionar y mostrar la carta de atrás si la tuviera
+            if (primerClick.parentElement.id === "c_seleccionada") {
+                seleccionar.splice(indiceCartaSeleccionada, cartasAMover.length);
+                
+                console.log("Se han movido las cartas de seleccionar:", seleccionar);
+
+                // Limpiar visualmente la carta que queda en seleccionar
+                const espacioSeleccionado = document.querySelector("#c_seleccionada");
+                if (espacioSeleccionado) {
+                    espacioSeleccionado.innerHTML = "";
+
+                    // Mostrar la carta de abajo si la tuviera
+                    if (seleccionar.length > 0) {
+                        const nuevaCartaHTML = crearCartaHTML(seleccionar[seleccionar.length - 1]);
+                        espacioSeleccionado.appendChild(nuevaCartaHTML);
+                    }
+                }
+            }
+
             // Voltear la nueva última carta de la columna de origen, si existe
             if (pilaPrimeraCarta.length > 0) {
                 pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
