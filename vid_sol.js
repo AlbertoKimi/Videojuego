@@ -266,6 +266,40 @@ mazoBaraja.addEventListener("click", () => {
     console.log("Creado mazo columna:", columna);
 };*/
 
+// Coloca las cartas en las columnas del tablero
+const ponerCartasColumna = () => {
+    for (let i = 0; i < columna.length; i++) {
+        const pila = document.querySelector(`#pila-${i}`);
+        if (!pila) {
+            console.error(`No se encontró el elemento #pila-${i}`);
+            continue;
+        }
+
+        pila.innerHTML = ""; // Limpiar la pila antes de colocar las cartas
+
+        // Si la columna está vacía, mostrar una carta fantasma (en el caso de las pilas vacías)
+        if (columna[i].length === 0) {
+            pila.appendChild(crearCartaFantasma(i));
+        } else {
+            columna[i].forEach((carta, j) => {
+                // Si es la última carta, la volteamos
+                if (j === columna[i].length - 1) carta.estaVolteada = false;
+
+                // Crear el HTML de la carta
+                const cartaHTML = crearCartaHTML(carta);
+                cartaHTML.dataset.pila = i; // Asignamos la pila a la carta
+                cartaHTML.style.position = "absolute"; // Asegurarnos de que la carta esté posicionada absolutamente
+
+                // Ajustar el desplazamiento vertical basado en la posición en la pila
+                cartaHTML.style.top = `${j * 33}px`; // Desplazamiento vertical de las cartas apiladas
+                cartaHTML.style.left = "0"; // Alineación horizontal
+                pila.appendChild(cartaHTML);
+            });
+        }
+    }
+    console.log("Creado mazo columna:", columna);
+};
+
 
 // =====================
 // LÓGICA DE MOVIMIENTO
@@ -290,6 +324,7 @@ const comprobarClick = (carta) => {
                 return c.numero == carta.dataset.numero && c.tipo == carta.dataset.tipo;
             }
         );
+       
         console.log(columna);
         console.log("Intentando seleccionar carta en pila:", pilaCartaSeleccionada);
         console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
@@ -305,6 +340,7 @@ const comprobarClick = (carta) => {
 
         // Si la carta es válida, la seleccionamos
         primerClick = carta;
+        console.log("El primer click es",primerClick)
         carta.style.border = "2px solid red";
         console.log("Carta seleccionada correctamente:", primerClick.dataset);
     } else {
@@ -317,6 +353,7 @@ const comprobarClick = (carta) => {
         }
 
         const segundoClick = carta;
+        console.log("Segundo click:", segundoClick.dataset);
         let pilaPrimeraCarta = [];
         let pilaSegundaCarta = [];
         let pilaOrigen = null;
@@ -442,6 +479,9 @@ else if (pilaOrigen && hogarIndex !== -1) {
 
         console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
         console.log(hogares);
+
+        // Verificar si el jugador ha ganado
+        verificarVictoria();
     } else {
         console.log("Movimiento no permitido. No cumple las reglas.");
     }
@@ -455,6 +495,7 @@ else if (pilaOrigen && hogarIndex !== -1) {
             const hogarIndex = Number(segundoClick.dataset.hogar);
             const cartaSeleccionada = seleccionar[indiceCartaSeleccionada];
             const hogarDestino = hogares[hogarIndex];
+            console.log("Mazo hogar",hogares);
 
             // Validar si la carta puede moverse al hogar
             if (
@@ -464,7 +505,7 @@ else if (pilaOrigen && hogarIndex !== -1) {
                     cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo)
             ) {
                 // Mover la carta al hogar
-                seleccionar.splice(indiceCartaSeleccionada, 1);
+                seleccionar.splice(indiceCartaSeleccionada);
                 cartaSeleccionada.estaVolteada = false; // Asegurar que la carta se voltee
                 hogarDestino.push(cartaSeleccionada);
 
@@ -494,9 +535,70 @@ else if (pilaOrigen && hogarIndex !== -1) {
 
                 console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
                 console.log(hogares);
+
+                // Verificar si el jugador ha ganado
+                verificarVictoria();
             } else {
                 console.log("Movimiento no permitido. No cumple las reglas.");
             }
+        }
+
+        // Nueva funcionalidad: Mover carta de seleccionar o columna a hogar si es del mismo tipo y número +1
+        else if (segundoClick.dataset.hogar !== undefined &&
+            ((Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) + 1 && primerClick.dataset.tipo === segundoClick.dataset.tipo) ||
+            (Number(primerClick.dataset.numero) === 1 && segundoClick.dataset.fantasma === "true"))) {
+            console.log("Moviendo carta de seleccionar o columna a hogar.");
+
+            const hogarIndex = Number(segundoClick.dataset.hogar);
+            const cartaSeleccionada = primerClick.parentElement.id === "c_seleccionada" ? seleccionar[indiceCartaSeleccionada] : pilaPrimeraCarta[indiceCartaSeleccionada];
+            const hogarDestino = hogares[hogarIndex];
+
+            // Limpiar el hogar antes de agregar la nueva carta
+            const hogarElemento = document.querySelector(`#hogar-${hogarIndex}`);
+            if (hogarElemento) {
+                hogarElemento.innerHTML = "";
+            }
+
+            // Mover la carta al hogar
+            if (primerClick.parentElement.id === "c_seleccionada") {
+                seleccionar.splice(indiceCartaSeleccionada, 1);
+            } else {
+                pilaPrimeraCarta.splice(indiceCartaSeleccionada, 1);
+            }
+            cartaSeleccionada.estaVolteada = false; // Asegurar que la carta se voltee
+            hogarDestino.push(cartaSeleccionada);
+
+            // ✅ **Actualizar visualmente el hogar**
+            if (hogarElemento) {
+                const nuevaCartaHTML = crearCartaHTML(cartaSeleccionada); // Crear carta con datos reales
+                hogarElemento.appendChild(nuevaCartaHTML);
+            }
+
+            // Limpiar visualmente la carta que queda en seleccionar
+            const espacioSeleccionado = document.querySelector("#c_seleccionada");
+            if (espacioSeleccionado) {
+                espacioSeleccionado.innerHTML = "";
+
+                // Mostrar la carta de abajo si la tuviera
+                if (seleccionar.length > 0) {
+                    const nuevaCartaHTML = crearCartaHTML(seleccionar[seleccionar.length - 1]);
+                    espacioSeleccionado.appendChild(nuevaCartaHTML);
+                }
+            }
+
+            console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
+            console.log(hogares);
+
+            // Verificar si el jugador ha ganado
+            verificarVictoria();
+
+            // Voltear la nueva última carta de la columna de origen, si existe
+            if (pilaPrimeraCarta.length > 0) {
+                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
+                console.log("Volteando la nueva última carta en la pila de origen:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
+            }
+
+            ponerCartasColumna(); // Actualizar las pilas visualmente
         }
 
         // Movimiento especial: Rey a una columna vacía
@@ -570,6 +672,9 @@ else if (pilaOrigen && hogarIndex !== -1) {
             }
             console.log(hogares);
             ponerCartasColumna(); // Actualizar las pilas visualmente
+
+            // Verificar si el jugador ha ganado
+            verificarVictoria();
         }
         else {
             console.warn("Movimiento no permitido. No cumple las reglas.");
@@ -619,6 +724,14 @@ const resetearSeleccion = () => {
     primerClick = null;
 };
 
+// Función para verificar si el jugador ha ganado
+const verificarVictoria = () => {
+    const haGanado = hogares.every(hogar => hogar.length > 0 && hogar[hogar.length - 1].numero === 13);
+    if (haGanado) {
+        alert("¡Has ganado!");
+    }
+};
+
 // =====================
 // EVENTOS
 // =====================
@@ -654,39 +767,6 @@ if (botonEmpezar) {
     console.error("No se encontró el botón con la clase .adelante");
 }
 
-// Coloca las cartas en las columnas del tablero
-const ponerCartasColumna = () => {
-    for (let i = 0; i < columna.length; i++) {
-        const pila = document.querySelector(`#pila-${i}`);
-        if (!pila) {
-            console.error(`No se encontró el elemento #pila-${i}`);
-            continue;
-        }
-
-        pila.innerHTML = ""; // Limpiar la pila antes de colocar las cartas
-
-        // Si la columna está vacía, mostrar una carta fantasma (en el caso de las pilas vacías)
-        if (columna[i].length === 0) {
-            pila.appendChild(crearCartaFantasma(i));
-        } else {
-            columna[i].forEach((carta, j) => {
-                // Si es la última carta, la volteamos
-                if (j === columna[i].length - 1) carta.estaVolteada = false;
-
-                // Crear el HTML de la carta
-                const cartaHTML = crearCartaHTML(carta);
-                cartaHTML.dataset.pila = i; // Asignamos la pila a la carta
-                cartaHTML.style.position = "absolute"; // Asegurarnos de que la carta esté posicionada absolutamente
-
-                // Ajustar el desplazamiento vertical basado en la posición en la pila
-                cartaHTML.style.top = `${j * 33}px`; // Desplazamiento vertical de las cartas apiladas
-                cartaHTML.style.left = "0"; // Alineación horizontal
-                pila.appendChild(cartaHTML);
-            });
-        }
-    }
-    console.log("Creado mazo columna:", columna);
-};
 
 
 
