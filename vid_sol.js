@@ -232,34 +232,8 @@ mazoBaraja.addEventListener("click", () => {
     console.log("Mazo Barajado ", mazoBarajado);
 });
 
-
 // Coloca las cartas en las columnas del tablero
-/*const ponerCartasColumna = () => {
-    for (let i = 0; i < columna.length; i++) {
-        const pila = document.querySelector(`#pila-${i}`);
-        if (!pila) {
-            console.error(`No se encontró el elemento #pila-${i}`);
-            continue;
-        }
-
-        pila.innerHTML = "";
-
-        if (columna[i].length === 0) {
-            pila.appendChild(crearCartaFantasma(i));
-        } else {
-            columna[i].forEach((carta, j) => {
-                if (j === columna[i].length - 1) carta.estaVolteada = false;
-                const cartaHTML = crearCartaHTML(carta);
-                cartaHTML.dataset.pila = i;
-                cartaHTML.style.top = `${j * 33}px`;
-                pila.appendChild(cartaHTML);
-            });
-        }
-    }
-};*/
-
-// Coloca las cartas en las columnas del tablero
-const ponerCartasColumna = () => {
+/*const ponerCartasColumna1 = () => {
     for (let i = 0; i < columna.length; i++) {
         const pila = document.querySelector(`#pila-${i}`);
         if (!pila) {
@@ -290,7 +264,7 @@ const ponerCartasColumna = () => {
         }
     }
     console.log("Creado mazo columna:", columna);
-};
+};*/
 
 
 // =====================
@@ -361,7 +335,7 @@ const comprobarClick = (carta) => {
         }
 
         columna.forEach((pila, index) => {
-            if (pila.some(c => c.numero == primerClick.dataset.numero && c.tipo == primerClick.dataset.tipo)) {
+            if (pila.some(c => Number(c.numero) == Number(primerClick.dataset.numero) && c.tipo == primerClick.dataset.tipo)) {
                 pilaOrigen = pila;
                 columnaIndex = index;
             }
@@ -395,20 +369,20 @@ const comprobarClick = (carta) => {
             Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) - 1 &&
             segundoClick.dataset.tipo !== primerClick.dataset.tipo && segundoClick.dataset.color !== primerClick.dataset.color//CORREGIR--> PUEDO MOVER DISTINTO TIPO E IGUAL COLOR
         ) {
-            // Mover la carta seleccionada
-            const cartaAMover = pilaPrimeraCarta[indiceCartaSeleccionada];
-            console.log("Carta a mover:", cartaAMover);
+            // Mover todas las cartas desde el primerClick hasta el final de la pila
+            const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada);
+            console.log("Cartas a mover:", cartasAMover);
 
-            pilaSegundaCarta.push(cartaAMover);
+            pilaSegundaCarta.push(...cartasAMover);
 
-            // Eliminar la carta movida de la pila original
-            pilaPrimeraCarta.splice(indiceCartaSeleccionada, 1);
+            // Eliminar las cartas movidas de la pila original
+            pilaPrimeraCarta.splice(indiceCartaSeleccionada, cartasAMover.length);
 
             // Si el primerClick es de seleccionar, quitar la carta de seleccionar
             if (primerClick.parentElement.id === "c_seleccionada") {
-                seleccionar.splice(indiceCartaSeleccionada, 1);
-
-                console.log("Se ha movido la carta de seleccionar:", seleccionar);
+                seleccionar.splice(indiceCartaSeleccionada, cartasAMover.length);
+                
+                console.log("Se han movido las cartas de seleccionar:", seleccionar);
 
                 // Limpiar visualmente la carta que queda en seleccionar
                 const espacioSeleccionado = document.querySelector("#c_seleccionada");
@@ -433,49 +407,48 @@ const comprobarClick = (carta) => {
         }
 
         // Mov número +1 y mismo tipo a la pila hogar
-        else if (pilaOrigen && hogarIndex !== -1) {
-            const cartaSeleccionada = pilaOrigen[pilaOrigen.length - 1];
-            const hogarDestino = hogares[hogarIndex];
+else if (pilaOrigen && hogarIndex !== -1) {
+    const cartaSeleccionada = pilaOrigen[pilaOrigen.length - 1];
+    const hogarDestino = hogares[hogarIndex];
 
-            // Validar si la carta puede moverse al hogar
-            if (
-                (hogarDestino.length === 0 && cartaSeleccionada.numero === 1) || // Permitir Ases en pilas vacías
-                (hogarDestino.length > 0 &&
-                    cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
-                    cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo)
-            ) {
-                // Mover la carta al hogar
-                pilaOrigen.pop();
-                cartaSeleccionada.estaVolteada = false; // Asegurar que la carta se voltee
-                hogarDestino.push(cartaSeleccionada);
+    // Validar si la carta puede moverse al hogar
+    if (
+        (hogarDestino.length === 0 && cartaSeleccionada.numero === 1) || // Permitir Ases en pilas vacías
+        (hogarDestino.length > 0 &&
+            cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
+            cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo)
+    ) {
+        // Mover la carta al hogar
+        pilaOrigen.pop();
+        cartaSeleccionada.estaVolteada = false; // Asegurar que la carta se voltee
+        hogarDestino.push(cartaSeleccionada);
 
-                // ✅ **Actualizar visualmente el hogar**
-                const hogarElemento = document.querySelector(`#hogar-${hogarIndex}`);
-                if (hogarElemento) {
-                    hogarElemento.innerHTML = ""; // Limpiar hogar antes de agregar la nueva carta
-                    const nuevaCartaHTML = crearCartaHTML(cartaSeleccionada); // Crear carta con datos reales
-                    hogarElemento.appendChild(nuevaCartaHTML);
+        // ✅ **Actualizar visualmente el hogar**
+        const hogarElemento = document.querySelector(`#hogar-${hogarIndex}`);
+        if (hogarElemento) {
+            hogarElemento.innerHTML = ""; // Limpiar hogar antes de agregar la nueva carta
+            const nuevaCartaHTML = crearCartaHTML(cartaSeleccionada); // Crear carta con datos reales
+            hogarElemento.appendChild(nuevaCartaHTML);
 
-                    // Agregar carta fantasma nuevamente para permitir más movimientos
-                    /*const cartaFantasma = crearCartaFantasmaHogar(hogarIndex);
-                    hogarElemento.appendChild(cartaFantasma);*/
-                }
+            // Agregar carta fantasma nuevamente para permitir más movimientos
+            /*const cartaFantasma = crearCartaFantasmaHogar(hogarIndex);
+            hogarElemento.appendChild(cartaFantasma);*/
+        }
 
-                // ✅ **Si la pila de origen aún tiene cartas, voltear la última**
-                if (pilaOrigen.length > 0) {
-                    pilaOrigen[pilaOrigen.length - 1].estaVolteada = false;
-                }
+        // ✅ **Si la pila de origen aún tiene cartas, voltear la última**
+        if (pilaOrigen.length > 0) {
+            pilaOrigen[pilaOrigen.length - 1].estaVolteada = false;
+        }
 
-                console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
-                console.log(hogares);
-            } else {
-                console.log("Movimiento no permitido. No cumple las reglas.");
-            }
-
-            ponerCartasColumna(); // Actualizar las pilas visualmente
+        console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
+        console.log(hogares);
+    } else {
+        console.log("Movimiento no permitido. No cumple las reglas.");
+    }
+    
+    ponerCartasColumna(); // Actualizar las pilas visualmente
 
         }
-        //REVISAR AQUÍ!!!
 
         // Mover carta de seleccionar a hogar
         else if (primerClick.parentElement.id === "c_seleccionada" && segundoClick.dataset.hogar !== undefined) {
@@ -529,23 +502,16 @@ const comprobarClick = (carta) => {
         // Movimiento especial: Rey a una columna vacía
         else if (Number(primerClick.dataset.numero) === 13 && segundoClick.dataset.fantasma !== undefined) {
             console.log("Moviendo Rey a una columna vacía.");
-            const cartaAMover = seleccionar[indiceCartaSeleccionada];
-            const columnaDestino = columna[Number(segundoClick.dataset.pila)];
+            const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada); // Todas las cartas a partir de la seleccionada
+            pilaSegundaCarta.push(...cartasAMover);
 
-            // Mover la carta al destino
-            seleccionar.splice(indiceCartaSeleccionada, 1);
-            columnaDestino.push(cartaAMover);
+            // Eliminar las cartas movidas de la pila original
+            pilaPrimeraCarta.splice(indiceCartaSeleccionada, cartasAMover.length);
 
-            // Limpiar visualmente la carta que queda en seleccionar
-            const espacioSeleccionado = document.querySelector("#c_seleccionada");
-            if (espacioSeleccionado) {
-                espacioSeleccionado.innerHTML = "";
-
-                // Mostrar la carta de abajo si la tuviera
-                if (seleccionar.length > 0) {
-                    const nuevaCartaHTML = crearCartaHTML(seleccionar[seleccionar.length - 1]);
-                    espacioSeleccionado.appendChild(nuevaCartaHTML);
-                }
+            // Voltear la nueva última carta de la columna de origen, si existe
+            if (pilaPrimeraCarta.length > 0) {
+                pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
+                console.log("Volteando la nueva última carta en la pila de origen:", pilaPrimeraCarta[pilaPrimeraCarta.length - 1]);
             }
 
             ponerCartasColumna(); // Actualizar las pilas visualmente
@@ -557,7 +523,7 @@ const comprobarClick = (carta) => {
 
             const hogarIndex = Number(segundoClick.dataset.hogar);
             const hogarDestino = hogares[hogarIndex];
-
+        
             // Remover la carta del origen
             let cartaAMover = null;
             for (let pila of columna) {
@@ -567,15 +533,15 @@ const comprobarClick = (carta) => {
                     break;
                 }
             }
-
+        
             if (!cartaAMover) {
                 console.warn("No se encontró la carta para mover.");
                 return;
             }
-
+        
             cartaAMover.estaVolteada = false; // Asegurar que se muestre correctamente
             hogarDestino.push(cartaAMover); // Agregar la carta al hogar en el array
-
+        
             // ✅ **Actualizar visualmente el hogar**
             const hogarElemento = document.querySelector(`#hogar-${hogarIndex}`);
             if (hogarElemento) {
@@ -668,6 +634,40 @@ if (botonEmpezar) {
 } else {
     console.error("No se encontró el botón con la clase .adelante");
 }
+
+// Coloca las cartas en las columnas del tablero
+const ponerCartasColumna = () => {
+    for (let i = 0; i < columna.length; i++) {
+        const pila = document.querySelector(`#pila-${i}`);
+        if (!pila) {
+            console.error(`No se encontró el elemento #pila-${i}`);
+            continue;
+        }
+
+        pila.innerHTML = ""; // Limpiar la pila antes de colocar las cartas
+
+        // Si la columna está vacía, mostrar una carta fantasma (en el caso de las pilas vacías)
+        if (columna[i].length === 0) {
+            pila.appendChild(crearCartaFantasma(i));
+        } else {
+            columna[i].forEach((carta, j) => {
+                // Si es la última carta, la volteamos
+                if (j === columna[i].length - 1) carta.estaVolteada = false;
+
+                // Crear el HTML de la carta
+                const cartaHTML = crearCartaHTML(carta);
+                cartaHTML.dataset.pila = i; // Asignamos la pila a la carta
+                cartaHTML.style.position = "absolute"; // Asegurarnos de que la carta esté posicionada absolutamente
+
+                // Ajustar el desplazamiento vertical basado en la posición en la pila
+                cartaHTML.style.top = `${j * 33}px`; // Desplazamiento vertical de las cartas apiladas
+                cartaHTML.style.left = "0"; // Alineación horizontal
+                pila.appendChild(cartaHTML);
+            });
+        }
+    }
+    console.log("Creado mazo columna:", columna);
+};
 
 
 
