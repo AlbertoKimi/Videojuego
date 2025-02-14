@@ -460,6 +460,7 @@ const moverReyAColumnaVacia = (pilaPrimeraCarta, segundoClick, indiceCartaSelecc
     }
 
     ponerCartasColumna();
+    verificarVictoria();
 };
 
 const moverAsAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
