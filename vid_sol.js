@@ -600,8 +600,15 @@ const verificarVictoria = () => {
 
 // Función para mostrar la ventana emergente de victoria
 const mostrarVentanaVictoria = () => {
+    const modal= document.querySelector("#modal");
+    const jugar= document.querySelector("#reiniciar");
+    modal.showModal();
+    jugar.onclick = () => {
+        botonEmpezar.click();
+        modal.close();
+    };
     // Crear el contenedor de la ventana emergente
-    const ventana = document.createElement("div");
+    /*const ventana = document.createElement("div");
     ventana.style.position = "fixed";
     ventana.style.top = "50%";
     ventana.style.left = "50%";
@@ -643,7 +650,7 @@ const mostrarVentanaVictoria = () => {
     ventana.appendChild(botonPaginaInicial);
 
     // Agregar la ventana emergente al cuerpo del documento
-    document.body.appendChild(ventana);
+    document.body.appendChild(ventana);*/
 };
 
 // =====================
