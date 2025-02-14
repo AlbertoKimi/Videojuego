@@ -367,8 +367,10 @@ const procesarSegundoClick = (carta) => {
     } else if (movimientoReyAColumnaVacia(primerClick, segundoClick)) {
         moverReyAColumnaVacia(pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada);
     } else if (movimientoAsAHogar(primerClick, segundoClick)) {
+        console.log("Movimiento permitido: As a hogar");
         moverAsAHogar(primerClick, segundoClick, indiceCartaSeleccionada);
     } else if (movimientoCartaAHogar(primerClick, segundoClick)) {
+        console.log("Movimiento permitido: Carta a hogar");
         moverCartaAHogar(primerClick, segundoClick, indiceCartaSeleccionada);
     } else {
         console.warn("Movimiento no permitido. No cumple las reglas.");
@@ -395,9 +397,8 @@ const movimientoAsAHogar = (primerClick, segundoClick) => {
 };
 
 const movimientoCartaAHogar = (primerClick, segundoClick) => {
-    return segundoClick.dataset.hogar !== undefined &&
-        ((Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) + 1 && primerClick.dataset.tipo === segundoClick.dataset.tipo) ||
-        (Number(primerClick.dataset.numero) === 1 && segundoClick.dataset.fantasma === "true"));
+    return Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) + 1 && primerClick.dataset.tipo === segundoClick.dataset.tipo; 
+        
 };
 
 const moverCartas = (pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada) => {
