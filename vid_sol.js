@@ -320,8 +320,6 @@ const procesarSegundoClick = (carta) => {
     const segundoClick = carta;
     let pilaPrimeraCarta = [];
     let pilaSegundaCarta = [];
-    let pilaOrigen = null;
-    let columnaIndex = -1;
 
     if (primerClick.parentElement.id === "c_seleccionada") {
         pilaPrimeraCarta = seleccionar;
@@ -334,13 +332,6 @@ const procesarSegundoClick = (carta) => {
     } else if (segundoClick.dataset.hogar !== undefined) {
         pilaSegundaCarta = hogares[Number(segundoClick.dataset.hogar)];
     }
-
-    columna.forEach((pila, index) => {
-        if (pila.some(c => Number(c.numero) == Number(primerClick.dataset.numero) && c.tipo == primerClick.dataset.tipo)) {
-            pilaOrigen = pila;
-            columnaIndex = index;
-        }
-    });
 
     let hogarIndex = -1;
     hogares.forEach((pila, index) => {
@@ -367,11 +358,9 @@ const procesarSegundoClick = (carta) => {
     } else if (movimientoReyAColumnaVacia(primerClick, segundoClick)) {
         moverReyAColumnaVacia(pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada);
     } else if (movimientoAsAHogar(primerClick, segundoClick)) {
-        console.log("Movimiento permitido: As a hogar");
         moverAsAHogar(primerClick, segundoClick, indiceCartaSeleccionada);
-    } else if (movimientoCartaAHogar(primerClick, segundoClick)) {
-        console.log("Movimiento permitido: Carta a hogar");
-        moverCartaAHogar(primerClick, segundoClick, indiceCartaSeleccionada);
+    } else if (movimientoCartaAHogar(primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada)) {
+        moverCartaAHogar(primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada);
     } else {
         console.warn("Movimiento no permitido. No cumple las reglas.");
         alert("No se puede realizar el movimiento");
@@ -396,9 +385,21 @@ const movimientoAsAHogar = (primerClick, segundoClick) => {
     return primerClick.dataset.numero === "1" && segundoClick.dataset.fantasma === "true" && segundoClick.dataset.hogar !== undefined;
 };
 
-const movimientoCartaAHogar = (primerClick, segundoClick) => {
-    return Number(primerClick.dataset.numero) === Number(segundoClick.dataset.numero) + 1 && primerClick.dataset.tipo === segundoClick.dataset.tipo; 
-        
+const movimientoCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada) => {
+    const hogarIndex = Number(segundoClick.dataset.hogar);
+    const hogarDestino = hogares[hogarIndex];
+    const cartaSeleccionada = primerClick.parentElement.id === "c_seleccionada" ? seleccionar[indiceCartaSeleccionada] : pilaPrimeraCarta[indiceCartaSeleccionada];
+
+    if (
+        hogarDestino &&
+        ((hogarDestino.length === 0 && cartaSeleccionada.numero === 1) || // Permitir Ases en pilas vacías
+        (hogarDestino.length > 0 &&
+            cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
+            cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo))
+    ) {
+        return true;
+    }
+    return false;
 };
 
 const moverCartas = (pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada) => {
@@ -472,6 +473,7 @@ const moverAsAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
         hogarElemento.innerHTML = "";
         const nuevaCartaHTML = crearCartaHTML(cartaAMover);
         hogarElemento.appendChild(nuevaCartaHTML);
+        hogarElemento.appendChild(crearCartaFantasmaHogar(hogarIndex)); // Agregar carta fantasma
     }
 
     console.log(hogares);
@@ -479,7 +481,7 @@ const moverAsAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
     verificarVictoria();
 };
 
-const moverCartaAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
+const moverCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada) => {
     const hogarIndex = Number(segundoClick.dataset.hogar);
     const hogarDestino = hogares[hogarIndex];
     const cartaSeleccionada = primerClick.parentElement.id === "c_seleccionada" ? seleccionar[indiceCartaSeleccionada] : pilaPrimeraCarta[indiceCartaSeleccionada];
@@ -500,6 +502,7 @@ const moverCartaAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) =>
     if (hogarElemento) {
         const nuevaCartaHTML = crearCartaHTML(cartaSeleccionada);
         hogarElemento.appendChild(nuevaCartaHTML);
+        hogarElemento.appendChild(crearCartaFantasmaHogar(hogarIndex)); // Agregar carta fantasma
     }
 
     actualizarSeleccionVisual();
