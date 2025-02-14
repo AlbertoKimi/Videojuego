@@ -356,7 +356,7 @@ const procesarSegundoClick = (carta) => {
     if (movimientoPermitido(indiceCartaSeleccionada, segundoClick)) {
         moverCartas(pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada);
     } else if (movimientoReyAColumnaVacia(primerClick, segundoClick)) {
-        moverReyAColumnaVacia(pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada);
+        moverReyAColumnaVacia(pilaPrimeraCarta, segundoClick, indiceCartaSeleccionada);
     } else if (movimientoAsAHogar(primerClick, segundoClick)) {
         moverAsAHogar(primerClick, segundoClick, indiceCartaSeleccionada);
     } else if (movimientoCartaAHogar(primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada)) {
@@ -422,11 +422,31 @@ const moverCartas = (pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada
     ponerCartasColumna();
 };
 
-const moverReyAColumnaVacia = (pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada) => {
+const moverReyAColumnaVacia = (pilaPrimeraCarta, segundoClick, indiceCartaSeleccionada) => {
     const cartasAMover = pilaPrimeraCarta.slice(indiceCartaSeleccionada);
     console.log("Cartas a mover:", cartasAMover);
 
-    pilaSegundaCarta.push(...cartasAMover);
+    if (segundoClick.dataset.pila !== undefined) {
+        const pilaSegundaCarta = columna[Number(segundoClick.dataset.pila)];
+        pilaSegundaCarta.push(...cartasAMover);
+    } else if (segundoClick.dataset.hogar !== undefined) {
+        const hogarDestino = hogares[Number(segundoClick.dataset.hogar)];
+        hogarDestino.push(...cartasAMover);
+
+        // Actualizar visualmente el hogar
+        const hogarElemento = document.querySelector(`#hogar-${Number(segundoClick.dataset.hogar)}`);
+        if (hogarElemento) {
+            hogarElemento.innerHTML = "";
+            hogarDestino.forEach(carta => {
+                const cartaHTML = crearCartaHTML(carta);
+                hogarElemento.appendChild(cartaHTML);
+            });
+            // Agregar carta fantasma en la última posición
+            const cartaFantasma = crearCartaFantasmaHogar(Number(segundoClick.dataset.hogar));
+            hogarElemento.appendChild(cartaFantasma);
+        }
+    }
+
     pilaPrimeraCarta.splice(indiceCartaSeleccionada, cartasAMover.length);
 
     if (primerClick.parentElement.id === "c_seleccionada") {
