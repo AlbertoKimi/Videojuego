@@ -602,11 +602,16 @@ const verificarVictoria = () => {
 const mostrarVentanaVictoria = () => {
     const modal= document.querySelector("#modal");
     const jugar= document.querySelector("#reiniciar");
+    const inicio=document.querySelector("#inicio");
     modal.showModal();
     jugar.onclick = () => {
         botonEmpezar.click();
         modal.close();
     };
+    inicio.onclick = () => {
+        window.location.href = "index.html";
+        modal.close();
+    }
     // Crear el contenedor de la ventana emergente
     /*const ventana = document.createElement("div");
     ventana.style.position = "fixed";
