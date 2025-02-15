@@ -382,7 +382,14 @@ const movimientoReyAColumnaVacia = (primerClick, segundoClick) => {
 };
 
 const movimientoAsAHogar = (primerClick, segundoClick) => {
-    return primerClick.dataset.numero === "1" && segundoClick.dataset.fantasma === "true" && segundoClick.dataset.hogar !== undefined;
+    const hogarIndex = Number(segundoClick.dataset.hogar);
+    const hogarDestino = hogares[hogarIndex];
+
+    // Comprobar si la pila de hogares está vacía
+    if (hogarDestino.length === 0 && primerClick.dataset.numero === "1" && segundoClick.dataset.fantasma === "true") {
+        return true;
+    }
+    return false;
 };
 
 const movimientoCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada) => {
