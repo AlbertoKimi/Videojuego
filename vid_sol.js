@@ -612,50 +612,7 @@ const mostrarVentanaVictoria = () => {
         window.location.href = "index.html";
         modal.close();
     }
-    // Crear el contenedor de la ventana emergente
-    /*const ventana = document.createElement("div");
-    ventana.style.position = "fixed";
-    ventana.style.top = "50%";
-    ventana.style.left = "50%";
-    ventana.style.width = "300px";
-    ventana.style.height = "200px";
-    ventana.style.transform = "translate(-50%, -50%)";
-    ventana.style.backgroundColor = "white";
-    ventana.style.padding = "20px";
-    ventana.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
-    ventana.style.zIndex = "1000";
-    ventana.style.textAlign = "center";
-
-    // Crear el mensaje de victoria
-    const mensaje = document.createElement("p");
-    mensaje.textContent = "ENHORABUENA HAS GANADO";
-    mensaje.style.fontSize = "24px";
-    mensaje.style.marginBottom = "20px";
-    ventana.appendChild(mensaje);
-
-    // Crear el botón de jugar de nuevo
-    const botonJugarDeNuevo = document.createElement("button");
-    botonJugarDeNuevo.textContent = "JUGAR DE NUEVO";
-    botonJugarDeNuevo.style.marginRight = "20px";
-    botonJugarDeNuevo.onclick = () => {
-        ventana.remove();
-        // Reiniciar el juego
-        botonEmpezar.click();
-    };
-    ventana.appendChild(botonJugarDeNuevo);
-
-    // Crear el botón de página inicial
-    const botonPaginaInicial = document.createElement("button");
-    botonPaginaInicial.textContent = "PÁGINA INICIAL";
-    botonPaginaInicial.onclick = () => {
-        ventana.remove();
-        // Redirigir a la página inicial (ajusta la URL según sea necesario)
-        window.location.href = "index.html";
-    };
-    ventana.appendChild(botonPaginaInicial);
-
-    // Agregar la ventana emergente al cuerpo del documento
-    document.body.appendChild(ventana);*/
+    
 };
 
 // =====================
