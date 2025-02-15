@@ -378,7 +378,11 @@ const movimientoPermitido = (indiceCartaSeleccionada, segundoClick) => {
 };
 
 const movimientoReyAColumnaVacia = (primerClick, segundoClick) => {
-    return Number(primerClick.dataset.numero) === 13 && segundoClick.dataset.fantasma !== undefined;
+    return (
+        Number(primerClick.dataset.numero) === 13 &&
+        segundoClick.dataset.fantasma !== undefined &&
+        segundoClick.dataset.pila !== undefined // Asegurar que la carta fantasma esté en la pila de columna
+    );
 };
 
 const movimientoAsAHogar = (primerClick, segundoClick) => {
@@ -406,6 +410,18 @@ const movimientoCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indi
     ) {
         return true;
     }
+
+    // Comprobar si la carta con numero === 13 puede moverse a una carta fantasma de la pila de hogares
+    if (
+        cartaSeleccionada.numero === 13 &&
+        segundoClick.dataset.fantasma === "true" &&
+        hogarDestino.length > 0 &&
+        hogarDestino[hogarDestino.length - 1].numero === 12 &&
+        hogarDestino[hogarDestino.length - 1].tipo === cartaSeleccionada.tipo
+    ) {
+        return true;
+    }
+
     return false;
 };
 
