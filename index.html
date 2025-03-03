@@ -5,11 +5,67 @@
     <meta charset="UTF-8" />
     <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solitario</title>
-    <link rel="stylesheet" href="estiloSol.css">
-    
+    <title>SolitarioP</title>
+    <link rel="stylesheet" href="estiloprincipal.css">
+
 </head>
 
 <body>
+    <div class="contenedor">
+        <section>
+            <div class="contenido">
+                <div class="juego">
+                    <video muted autoplay loop id="videoFondo">
+                        <source src="Imagenes/FondoJuego.mp4" type="video/mp4">
+                    </video>
+                    <div class="fondo">
+                        <button class="inicio">JUGAR</button>
+                    </div>
+                    <script>
+                        const inicio = document.querySelector(".inicio");
+                        if (inicio) {
+                            inicio.onclick = () => {
+                                window.location.href = "Principal.html";
+                            };
+                        }
+                        else {
+                            console.error("No se encontró el botón con la clase .adelante");
+                        }
+                    </script>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="contenido">
+                <div class="instruccion">
+                    <video muted autoplay loop id="videoFondo2">
+                        <source src="Imagenes/FondoIntrusc.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="contenido">
+                <div class="baraja">
+                    <video muted autoplay loop id="videoFondo3">
+                        <source src="Imagenes/FondoBaraja.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="contenido">
+                <div class="solitario">
+                    <video muted autoplay loop id="videoFondo4">
+                        <source src="Imagenes/FondoHist.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+    </div>
 </body>
+
 </html>

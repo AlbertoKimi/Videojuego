@@ -15,6 +15,7 @@ body {
 }
 
 .adelante{
+    margin-left: 10px;
     margin-top: 20px;
     color:white;
     background-color: blueviolet;
@@ -60,15 +61,22 @@ body {
     height: 38%;
     text-align: center;
     padding: 20px;
-    background-color: rgba(171, 224, 243, 0.848);
+    background-image: url("Imagenes/Olas.gif");
 }
 
+
 #modal p{
+    -webkit-text-stroke: 1px black;
     margin-top: 20px;
     padding: 20px;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
-    color: black;
+    color: white
+}
+
+#modal h1{
+    -webkit-text-stroke: 1.5px black;
+    color:white;
 }
 
 #modal::backdrop{

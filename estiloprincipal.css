@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat Alternates", sans-serif;
+}
+
+.contenedor {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction:row;
+}
+
+.contenedor section {
+    min-width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 97.6vh;
+}
+
+#videoFondo, #videoFondo2, #videoFondo3, #videoFondo4 {
+    position: absolute;
+    margin-top: -200px;
+    margin-left: -758px;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.contenedor section:nth-child(1) {
+    background: url("Imagenes/FondoJuego.mp4") no-repeat center center/cover;
+}
+
+.contenedor section:nth-child(2) {
+    background: url("Imagenes/FondoIntrusc.mp4") no-repeat center center/cover;
+}
+
+.contenedor section:nth-child(3) {
+    background: url("Imagenes/FondoBaraja.mp4") no-repeat center center/cover;
+}
+
+.contenedor section:nth-child(4) {
+    background: url("Imagenes/FondoHist.mp4") no-repeat center center/cover;
+}
+
+.contenedor section .contenido {
+    max-width: 800px;
+    padding: 40px;
+    text-align: center;
+    z-index: 1;
+}
+
+.juego {
+    border-radius: 45px;
+    background-color: rgba(255, 255, 255, 0.671);
+    margin-left: -100px;
+    margin-top: 120px;
+    width: 900px;
+    height: 450px;
+    border: 3px rgba(0, 179, 255, 0.64) solid;
+}
+
+.instruccion, .baraja, .solitario {
+    margin-left: -100px;
+    margin-top: 120px;
+    width: 900px;
+    height: 450px;
+    border: 3px red solid;
+}
+
+.inicio {
+    width: 200px;
+    height: 50px;
+    margin-top: 370px;
+    color: white;
+    background-color: blueviolet;
+    border-radius: 45px;
+    padding: 10px 20px;
+    font-weight: 800;
+    border: none;
+}
+
+.fondo {
+    background-size: 100%;
+    background-image: url("Imagenes/fondojuego.jpg");
+    border-radius: 45px;
+    border: 3px rgba(245, 245, 245, 0.778) solid;
+    width: 800px;
+    height: 350px;
+    margin-left: 50px;
+    margin-top: 50px;
+}
+
+/*.contenido p{
+    font-size: 40px;
+    -webkit-text-stroke: 1.5px rgb(150, 4, 50);
+    color:white;
+}*/

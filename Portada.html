@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitario</title>
+
+</head>
+
+<body>
+
+    <video muted autoplay loop id="videoFondo">
+        <source src="Imagenes/Encabezado.mp4" type="video/mp4">
+    </video>
+
+    <style>
+        #videoFondo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+        }
+    </style>
+
+    <script>
+        const video = document.querySelector("#videoFondo");
+        if (video) {
+            video.onclick = () => {
+                window.location.href = "index.html";
+            };
+        }
+        else {
+            console.error("No se encontró el botón con la clase .adelante");
+        }
+    </script>
+</body>
+
+
+
+</html>
