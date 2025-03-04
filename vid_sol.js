@@ -11,6 +11,9 @@ let primerClick = null;
 const TIPOS = ["Co", "Tr", "Di", "Pi"];
 const COLORES = { Co: "rojo", Tr: "negro", Di: "rojo", Pi: "negro" };
 
+let tiempoInicio;
+let intervaloReloj;
+
 // =====================
 // ELEMENTOS DEL DOM
 // =====================
@@ -617,15 +620,18 @@ const resetearSeleccion = () => {
 const verificarVictoria = () => {
     const haGanado = hogares.every(hogar => hogar.length > 0 && hogar[hogar.length - 1].numero === 13);
     if (haGanado) {
-        mostrarVentanaVictoria();
+        const tiempoTotal = detenerReloj();
+        const puntuacion = calcularPuntuacion(tiempoTotal);
+        guardarPuntuacion(puntuacion);
+        mostrarVentanaVictoria(puntuacion);
     }
 };
 
-// Función para mostrar la ventana emergente de victoria
-const mostrarVentanaVictoria = () => {
-    const modal= document.querySelector("#modal");
-    const jugar= document.querySelector("#reiniciar");
-    const inicio=document.querySelector("#inicio");
+const mostrarVentanaVictoria = (puntuacion) => {
+    const modal = document.querySelector("#modal");
+    const jugar = document.querySelector("#reiniciar");
+    const inicio = document.querySelector("#inicio");
+    modal.querySelector("p").textContent = `Has ganado el juego con una puntuación de ${puntuacion} puntos`;
     modal.showModal();
     jugar.onclick = () => {
         botonEmpezar.click();
@@ -634,8 +640,38 @@ const mostrarVentanaVictoria = () => {
     inicio.onclick = () => {
         window.location.href = "index.html";
         modal.close();
-    }
-    
+    };
+};
+
+const iniciarReloj = () => {
+    tiempoInicio = Date.now();
+    intervaloReloj = setInterval(actualizarReloj, 1000);
+};
+
+const actualizarReloj = () => {
+    const tiempoActual = Date.now();
+    const tiempoTranscurrido = Math.floor((tiempoActual - tiempoInicio) / 1000);
+    const minutos = Math.floor(tiempoTranscurrido / 60);
+    const segundos = tiempoTranscurrido % 60;
+    document.querySelector("#reloj").textContent = `${minutos}:${segundos < 10 ? '0' : ''}${segundos}`;
+};
+
+const detenerReloj = () => {
+    clearInterval(intervaloReloj);
+    const tiempoFinal = Date.now();
+    const tiempoTotal = (tiempoFinal - tiempoInicio) / 1000; // Tiempo total en segundos
+    return tiempoTotal;
+};
+
+const calcularPuntuacion = (tiempoTotal) => {
+    const minutos = tiempoTotal / 60;
+    return Math.round(minutos * 100); // 100 puntos por minuto pasado, proporcionalmente
+};
+
+const guardarPuntuacion = (puntuacion) => {
+    const puntuaciones = JSON.parse(localStorage.getItem("puntuaciones")) || [];
+    puntuaciones.push(puntuacion);
+    localStorage.setItem("puntuaciones", JSON.stringify(puntuaciones));
 };
 
 // =====================
@@ -668,6 +704,7 @@ if (botonEmpezar) {
         agregarCartasFantasmaHogar();
         crearPilasHogar();
         ponerCartasInicio();
+        iniciarReloj(); // Iniciar el reloj
     };
 } else {
     console.error("No se encontró el botón con la clase .adelante");

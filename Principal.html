@@ -26,6 +26,7 @@
                 </div>
                 <div class="esp-carta2" id="c_seleccionada"></div>
             </div>
+            <div id="reloj">0:00</div> <!-- Elemento para mostrar el reloj -->
             <div class="hogar">
                 <div class="esp-carta" id="hogar-0">
                     <img src="Imagenes/As_Co.webp">
@@ -54,12 +55,20 @@
     </div>
 
     <script src="vid_sol.js"></script>
-    <dialog class= ventana id="modal">
+    <dialog class="ventana" id="modal">
         <h1>¡Felicidades!</h1>
         <p>Has ganado el juego</p>
-        <button class= bot id="reiniciar">Jugar de nuevo</button>
-        <button class= bot id="inicio">Volver al inicio</button>
+        <button class="bot" id="reiniciar">Jugar de nuevo</button>
+        <button class="bot" id="inicio">Volver al inicio</button>
     </dialog>       
+
+    <script>
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                window.location.href = "index.html";
+            }
+        });
+    </script>
 </body>
 
 </html>
