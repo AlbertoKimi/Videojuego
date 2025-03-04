@@ -18,10 +18,10 @@
             
             <div class="contenido">
                 <div class="menu">
-                    <img src="Imagenes/Solitario.webp" alt="">
-                    <img src="Imagenes/Instruccion.webp" alt="">
-                    <img src="Imagenes/Historia.jpeg" alt="">
-                    <img src="Imagenes/Baraja.webp" alt="">
+                    <img src="Imagenes/Solitario.webp" alt="Solitario" data-section="1">
+                    <img src="Imagenes/Instruccion.webp" alt="Instruccion" data-section="2">
+                    <img src="Imagenes/Historia.jpeg" alt="Historia" data-section="3">
+                    <img src="Imagenes/Baraja.webp" alt="Baraja" data-section="4">
                 </div>
                 <div class="juego">
                     <video muted autoplay loop id="videoFondo">
@@ -48,10 +48,10 @@
         <section>
             <div class="contenido">
                 <div class="menu">
-                    <img src="Imagenes/Solitario.webp" alt="">
-                    <img src="Imagenes/Instruccion.webp" alt="">
-                    <img src="Imagenes/Historia.jpeg" alt="">
-                    <img src="Imagenes/Baraja.webp" alt="">
+                    <img src="Imagenes/Solitario.webp" alt="Solitario" data-section="1">
+                    <img src="Imagenes/Instruccion.webp" alt="Instruccion" data-section="2">
+                    <img src="Imagenes/Historia.jpeg" alt="Historia" data-section="3">
+                    <img src="Imagenes/Baraja.webp" alt="Baraja" data-section="4">
                 </div>
                 <div class="instruccion">
                     <video muted autoplay loop id="videoFondo2">
@@ -64,10 +64,10 @@
         <section>
             <div class="contenido">
                 <div class="menu">
-                    <img src="Imagenes/Solitario.webp" alt="">
-                    <img src="Imagenes/Instruccion.webp" alt="">
-                    <img src="Imagenes/Historia.jpeg" alt="">
-                    <img src="Imagenes/Baraja.webp" alt="">
+                    <img src="Imagenes/Solitario.webp" alt="Solitario" data-section="1">
+                    <img src="Imagenes/Instruccion.webp" alt="Instruccion" data-section="2">
+                    <img src="Imagenes/Historia.jpeg" alt="Historia" data-section="3">
+                    <img src="Imagenes/Baraja.webp" alt="Baraja" data-section="4">
                 </div>
                 <div class="baraja">
                     <video muted autoplay loop id="videoFondo3">
@@ -80,10 +80,10 @@
         <section>
             <div class="contenido">
                 <div class="menu">
-                    <img src="Imagenes/Solitario.webp" alt="">
-                    <img src="Imagenes/Instruccion.webp" alt="">
-                    <img src="Imagenes/Historia.jpeg" alt="">
-                    <img src="Imagenes/Baraja.webp" alt="">
+                    <img src="Imagenes/Solitario.webp" alt="Solitario" data-section="1">
+                    <img src="Imagenes/Instruccion.webp" alt="Instruccion" data-section="2">
+                    <img src="Imagenes/Historia.jpeg" alt="Historia" data-section="3">
+                    <img src="Imagenes/Baraja.webp" alt="Baraja" data-section="4">
                 </div>
                 <div class="solitario">
                     <video muted autoplay loop id="videoFondo4">
@@ -94,18 +94,36 @@
         </section>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded',function(){
-            const cartas=document.querySelectorAll('.menu img');
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartas = document.querySelectorAll('.menu img');
+            let selectedCarta = null;
 
-            cartas.forEach(carta =>{
-                carta.addEventListener('click',function(){
-                    if(this.classList.contains('menu-selected')){
+            cartas.forEach(carta => {
+                carta.addEventListener('click', function () {
+                    if (this.classList.contains('menu-selected')) {
                         this.classList.remove('menu-selected');
-                    }
-                    else{
-                        cartas.forEach(innerCarta=> innerCarta.classList.remove
-                            ('menu-selected'));
+                        selectedCarta = null;
+                        // Referencia a una sección distinta
+                        const sectionNumber = this.getAttribute('data-section');
+                        const section = document.querySelector(`.contenedor section:nth-child(${sectionNumber})`);
+                        if (section) {
+                            section.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    } else {
+                        cartas.forEach(innerCarta => innerCarta.classList.remove('menu-selected'));
                         this.classList.add('menu-selected');
+                        selectedCarta = this;
+                    }
+                });
+
+                carta.addEventListener('dblclick', function () {
+                    if (selectedCarta === this) {
+                        // Referencia a una sección distinta
+                        const sectionNumber = this.getAttribute('data-section');
+                        const section = document.querySelector(`.contenedor section:nth-child(${sectionNumber})`);
+                        if (section) {
+                            section.scrollIntoView({ behavior: 'smooth' });
+                        }
                     }
                 });
             });
