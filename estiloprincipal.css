@@ -106,10 +106,11 @@
    
 }
 
+
 .menu img{
     position: absolute;
-    width: 110px;
-    height: 150px;
+    width: 120px;
+    height: 170px;
     transition: 0.5s;
     transform-origin: bottom center;
     cursor: pointer;
