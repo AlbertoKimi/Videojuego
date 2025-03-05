@@ -5,6 +5,7 @@
     font-family: "Montserrat Alternates", sans-serif;
 }
 
+/*Div principal*/
 .contenedor {
     position: relative;
     width: 100%;
@@ -12,6 +13,7 @@
     flex-direction: row;
 }
 
+/*Div referente a cada sección*/
 .contenedor section {
     min-width: 100%;
     height: auto;
@@ -21,6 +23,7 @@
     height: 97.6vh;
 }
 
+/*Div de estilos para las secciones*/
 #videoFondo, #videoFondo2, #videoFondo3, #videoFondo4 {
     position: absolute;
     margin-top: -200px;
@@ -31,6 +34,7 @@
     z-index: -1;
 }
 
+/*Divs para hacer cada sección para poner el vídeo de fondo*/
 .contenedor section:nth-child(1) {
     background: url("Imagenes/FondoJuego.mp4") no-repeat center center/cover;
 }
@@ -54,6 +58,7 @@
     z-index: 1;
 }
 
+/*Divs para hacer esos pequeños rectángulos en el medio de cada sección*/
 .juego, .instruccion, .baraja, .solitario {
     border-radius: 45px;
     background-color: rgba(134, 201, 242, 0.91);
@@ -64,6 +69,7 @@
     border: 3px rgba(0, 179, 255, 0.64) solid;
 }
 
+/*Divs para los botones de la página index*/
 .inicio, .inicio2, .inicio3 {
     width: 200px;
     height: 50px;
@@ -76,6 +82,7 @@
     border: none;
 }
 
+/*Div para las imagenes de fondo de los rectángulos del medio*/
 .fondo {
     background-size: 100%;
     background-image: url("Imagenes/fondojuego.jpg");
@@ -95,6 +102,7 @@
     background-image: url("Imagenes/Palos\ Franc.webp");
 }
 
+/*Div para la sección de instrucciones*/
 .inst {
     background-size: 100%;
     border-radius: 45px;
@@ -129,6 +137,7 @@
     margin-bottom: 5px; /* Reducir la separación entre los elementos de la lista */
 }
 
+/*Div para las cartas del menú*/
 .menu {
     margin-left: 160px;
     top: 50px;
@@ -147,11 +156,13 @@
     cursor: pointer;
 }
 
+/*Lo que hacemos aquí es hacer que las cartas se transladen verticalmente*/
 .menu-selected {
     z-index: 10;
     transform: scale(0.85) translateY(-50%) !important;
 }
 
+/*Lo que hacemos aquí es poner cada carta en un ángulo para que quede en forma de abanico*/
 .menu img:nth-child(1) {
     transform: rotate(-20deg);
 }
@@ -186,9 +197,3 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
     background: #555; /* Color del thumb al pasar el mouse */
 }
-
-/*.contenido p{
-    font-size: 40px;
-    -webkit-text-stroke: 1.5px rgb(150, 4, 50);
-    color:white;
-}*/

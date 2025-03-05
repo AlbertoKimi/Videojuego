@@ -5,6 +5,7 @@
     font-family: "Montserrat Alternates", sans-serif;
 }
 
+/*Div de estilos del cuerpo del solitario*/
 body {
     background: url("Imagenes/FondoSoli.mp4");
     background-attachment: fixed;
@@ -13,6 +14,7 @@ body {
     background-repeat: no-repeat;
 }
 
+/*Div de estilos para poner el vídeo como fondo*/
 #videoFondo {
     position: fixed;
     top: 0;
@@ -23,6 +25,7 @@ body {
     z-index: -1;
 }
 
+/*Div de estilos para el botón de empezar a jugar*/
 .adelante {
     margin-left: 10px;
     margin-top: 20px;
@@ -34,11 +37,13 @@ body {
     border: none;
 }
 
+/*Div para los botones de la ventana emergente*/
 .bot {
     display: inline-flex;
     margin: 20px;
 }
 
+/*Estilos para los botones de la ventana emergente*/
 #reiniciar {
     margin-top: 25px;
     color: white;
@@ -59,6 +64,7 @@ body {
     border: none;
 }
 
+/*Hasta ventana son los estilos del texto y de la ventana emergente de victoria*/
 #modal {
     font-size: 20px;
     max-width: 1000px;
@@ -93,12 +99,14 @@ body {
     margin-left: 550px;
 }
 
+/*Div para las cartas*/
 .carta {
     position: absolute;
     width: 120px;
     height: 173px;
 }
 
+/* Div para el mazo superior izquierda*/
 .carta-baraja {
     position: relative;
     height: 173px;
@@ -112,18 +120,21 @@ body {
     object-fit: cover;
 }
 
+/*Div para las zonas de la parte de arriba del juego*/
 .arriba {
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
+/* Función para hacer ángulos*/
 @property --angle {
     syntax: "<angle>";
     initial-value: 0deg;
     inherits: false;
 }
 
+/*Estilo para crear un fondo que de vueltas y vaya cambiando de color*/
 .esp-carta::after, .esp-carta::before {
     content: '';
     position: absolute;
@@ -143,6 +154,7 @@ body {
     opacity: 0.5;
 }
 
+/*Función para girar en esos específicos ángulos de la función anteior*/
 @keyframes spin {
     from {
         --angle: 0deg;
@@ -152,6 +164,7 @@ body {
     }
 }
 
+/*Div para el mazo superior izquierda donde están las cartas para coger*/
 .esp-carta {
     width: 120px;
     height: 173px;
@@ -159,6 +172,7 @@ body {
     position: relative;
 }
 
+/*Div para las columnas de abajo*/
 .esp-carta1 {
     border: 3px solid blueviolet;
     width: 125px;
@@ -167,6 +181,7 @@ body {
     position: relative;
 }
 
+/*Div para el hueco en blanco que está al lado*/
 .esp-carta2 {
     border: 3px solid blueviolet;
     width: 120px;
@@ -175,20 +190,24 @@ body {
     position: relative;
 }
 
+
 #c_seleccionada img {
     width: 100%;
     height: 100%;
     object-fit: contain; /* Mantiene la proporción dentro del div */
 }
 
+/*Div para las dos secciones superior izquierda*/
 .mazo {
     display: flex;
 }
 
+/*Div para las columnas superior derecha*/
 .hogar {
     display: flex;
 }
 
+/*Estilos para las imagenes de hogar*/
 .hogar img {
     opacity: 90%;
     width: 100%;
@@ -196,6 +215,7 @@ body {
     object-fit: cover;
 }
 
+/*Div y estilos para las columnas de abajo*/
 .abajo {
     display: flex;
     justify-content: center;
@@ -206,6 +226,7 @@ body {
     object-fit: cover;
 }
 
+/*Div y estilos para la posición inicial*/
 .posicion_inicial {
     position: absolute;
 }
@@ -216,6 +237,7 @@ body {
     object-fit: cover;
 }
 
+/*Estilos para el reloj*/
 #reloj {
     font-size: 40px;
     font-weight: bold;
