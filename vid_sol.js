@@ -679,6 +679,13 @@ const guardarPuntuacion = (puntuacion) => {
     localStorage.setItem("puntuaciones", JSON.stringify(puntuaciones));
 };
 
+//Si le damos a la tecla esc va a la página principal
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        window.location.href = "index.html";
+    }
+});
+
 // =====================
 // EVENTOS
 // =====================
