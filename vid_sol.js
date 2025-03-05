@@ -629,6 +629,7 @@ const verificarVictoria = () => {
 };
 
 const mostrarVentanaVictoria = (puntuacion) => {
+    detenerReloj(); // Asegurar que el reloj se detenga cuando aparezca la ventana emergente de victoria
     const modal = document.querySelector("#modal");
     const jugar = document.querySelector("#reiniciar");
     const inicio = document.querySelector("#inicio");
@@ -683,6 +684,9 @@ const guardarPuntuacion = (puntuacion) => {
 // =====================
 if (botonEmpezar) {
     botonEmpezar.onclick = () => {
+        // Detener el reloj antes de reiniciar el juego
+        detenerReloj();
+
         // Reiniciar variables y tablero
         mazo = [];
         mazoBarajado = [];
