@@ -620,7 +620,8 @@ const resetearSeleccion = () => {
 const verificarVictoria = () => {
     const haGanado = hogares.every(hogar => hogar.length > 0 && hogar[hogar.length - 1].numero === 13);
     if (haGanado) {
-        const tiempoTotal = detenerReloj();
+        detenerReloj(); // Detener el reloj cuando se verifica la victoria
+        const tiempoTotal = (Date.now() - tiempoInicio) / 1000; // Tiempo total en segundos
         const puntuacion = calcularPuntuacion(tiempoTotal);
         guardarPuntuacion(puntuacion);
         mostrarVentanaVictoria(puntuacion);
@@ -658,14 +659,17 @@ const actualizarReloj = () => {
 
 const detenerReloj = () => {
     clearInterval(intervaloReloj);
-    const tiempoFinal = Date.now();
-    const tiempoTotal = (tiempoFinal - tiempoInicio) / 1000; // Tiempo total en segundos
-    return tiempoTotal;
 };
 
 const calcularPuntuacion = (tiempoTotal) => {
     const minutos = tiempoTotal / 60;
-    return Math.round(minutos * 100); // 100 puntos por minuto pasado, proporcionalmente
+    let puntuacion = 800;
+
+    if (minutos > 1) {
+        puntuacion -= Math.round((minutos - 1) * 100); // Restar 100 puntos por cada minuto pasado después del primer minuto
+    }
+
+    return Math.max(puntuacion, 0); // Asegurar que la puntuación no sea negativa
 };
 
 const guardarPuntuacion = (puntuacion) => {
