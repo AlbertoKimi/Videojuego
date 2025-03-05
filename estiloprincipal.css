@@ -87,11 +87,11 @@
     margin-top: 50px;
 }
 
-#fond1{
+#fond1 {
     background-image: url("Imagenes/HistoriaSol.webp");
 }
 
-#fond2{
+#fond2 {
     background-image: url("Imagenes/Palos\ Franc.webp");
 }
 
@@ -166,6 +166,25 @@
 
 .menu img:nth-child(4) {
     transform: rotate(40deg);
+}
+
+/* Estilo para el scroll horizontal */
+body::-webkit-scrollbar {
+    height: 8px; /* Altura del scroll horizontal */
+}
+
+body::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color del thumb al pasar el mouse */
 }
 
 /*.contenido p{
