@@ -17,6 +17,7 @@
     <div class="inicio">
         <button class="adelante">EMPEZAR JUEGO</button>
         <div class="arriba">
+            <!-- Divs de los dos mazos superiores izquierda-->
             <div class="mazo">
                 <div class="esp-carta">
                     <div id="posicion_inicial"></div>
@@ -27,6 +28,7 @@
                 <div class="esp-carta2" id="c_seleccionada"></div>
             </div>
             <div id="reloj">0:00</div> <!-- Elemento para mostrar el reloj -->
+            <!-- Divs de las columnas superior derecha dónde vamos colocando nuestras cartas-->
             <div class="hogar">
                 <div class="esp-carta" id="hogar-0">
                     <img src="Imagenes/As_Co.webp">
@@ -43,6 +45,7 @@
                 </div>
             </div>
         </div>
+        <!-- Divs de las columnas de abajo-->
         <div class="abajo">
             <div class="esp-carta1" id="pila-0"></div>
             <div class="esp-carta1" id="pila-1"></div>
@@ -55,6 +58,7 @@
     </div>
 
     <script src="vid_sol.js"></script>
+    <!-- Ventana emergente cuando ganamos el juego-->
     <dialog class="ventana" id="modal">
         <h1>¡Felicidades!</h1>
         <p>Has ganado el juego</p>
