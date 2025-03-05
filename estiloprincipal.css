@@ -82,7 +82,7 @@
     border-radius: 45px;
     border: 3px rgba(245, 245, 245, 0.778) solid;
     width: 800px;
-    height: 350px;
+    height: 378px;
     margin-left: 50px;
     margin-top: 50px;
 }
@@ -100,21 +100,21 @@
     border-radius: 45px;
     border: 3px rgba(245, 245, 245, 0.778) solid;
     width: 800px;
-    height: 350px;
+    height: 378px;
     margin-left: 50px;
     margin-top: 50px;
     text-align: left; /* Alinear el texto a la izquierda */
 }
 
 .inst h1 {
-    font-size: 20px;
+    font-size: 22px;
     text-align: center;
     margin-top: 30px;
 }
 
 .inst h2 {
     margin-left: 10px;
-    padding: 5px;
+    padding: 10px;
     font-size: 15px;
 }
 
@@ -124,7 +124,7 @@
 }
 
 .inst ul li {
-    font-size: 15px;
+    font-size: 16px;
     padding: 5px;
     margin-bottom: 5px; /* Reducir la separación entre los elementos de la lista */
 }
