@@ -122,6 +122,20 @@
                     <video muted autoplay loop id="videoFondo4">
                         <source src="Imagenes/FondoHist.mp4" type="video/mp4">
                     </video>
+                    <div class="fondo" id="fond2">
+                        <button class="inicio3">BARAJA FRANCESA</button>
+                    </div>
+                    <script>
+                        const inicio3 = document.querySelector(".inicio3");
+                        if (inicio3) {
+                            inicio3.onclick = () => {
+                                window.location.href = "https://javierneilabarajas.blogspot.com/2013/04/palos-de-la-baraja-francesa.html";
+                            };
+                        }
+                        else {
+                            console.error("No se encontró el botón con la clase .adelante");
+                        }
+                    </script>
                 </div>
             </div>
         </section>

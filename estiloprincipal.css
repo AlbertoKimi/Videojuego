@@ -64,7 +64,7 @@
     border: 3px rgba(0, 179, 255, 0.64) solid;
 }
 
-.inicio, .inicio2 {
+.inicio, .inicio2, .inicio3 {
     width: 200px;
     height: 50px;
     margin-top: 370px;
@@ -89,6 +89,10 @@
 
 #fond1{
     background-image: url("Imagenes/HistoriaSol.webp");
+}
+
+#fond2{
+    background-image: url("Imagenes/Palos\ Franc.webp");
 }
 
 .inst {
