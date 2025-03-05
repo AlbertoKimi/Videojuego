@@ -92,6 +92,20 @@
                     <video muted autoplay loop id="videoFondo3">
                         <source src="Imagenes/FondoBaraja.mp4" type="video/mp4">
                     </video>
+                    <div class="fondo" id="fond1">
+                        <button class="inicio2">HISTORIA</button>
+                    </div>
+                    <script>
+                        const inicio2 = document.querySelector(".inicio2");
+                        if (inicio2) {
+                            inicio2.onclick = () => {
+                                window.location.href = "https://www.solitaire365.com/es/estrategias/historia-del-solitario";
+                            };
+                        }
+                        else {
+                            console.error("No se encontró el botón con la clase .adelante");
+                        }
+                    </script>
                 </div>
             </div>
         </section>

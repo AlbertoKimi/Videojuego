@@ -64,7 +64,7 @@
     border: 3px rgba(0, 179, 255, 0.64) solid;
 }
 
-.inicio {
+.inicio, .inicio2 {
     width: 200px;
     height: 50px;
     margin-top: 370px;
@@ -85,6 +85,10 @@
     height: 350px;
     margin-left: 50px;
     margin-top: 50px;
+}
+
+#fond1{
+    background-image: url("Imagenes/HistoriaSol.webp");
 }
 
 .inst {
