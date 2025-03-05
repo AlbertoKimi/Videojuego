@@ -19,12 +19,28 @@
 
         h1 {
             position: absolute;
-            bottom: 80px; /* Ajustar según sea necesario */
+            bottom: 80px;
+            /* Ajustar según sea necesario */
             left: 50%;
             transform: translateX(-50%);
+            -webkit-text-stroke: 0.5px rgb(0, 0, 0);
             color: white;
             font-size: 1.5em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: parpadeo 2.5s infinite;
+            /* Añadir animación de parpadeo */
+        }
+
+        @keyframes parpadeo {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
         }
     </style>
 </head>
@@ -37,18 +53,12 @@
     <h1>[ PULSA ENTER ]</h1>
 
     <script>
-        const video = document.querySelector("#videoFondo");
-        if (video) {
-            video.onclick = () => {
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
                 window.location.href = "index.html";
-            };
-        }
-        else {
-            console.error("No se encontró el botón con la clase .adelante");
-        }
+            }
+        });
     </script>
 </body>
-
-
 
 </html>
