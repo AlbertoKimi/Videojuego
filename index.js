@@ -1,3 +1,4 @@
+//Son los onclick de los botones que hay en las secciones
 const inicio = document.querySelector(".inicio");
 if (inicio) {
     inicio.onclick = () => {
@@ -28,6 +29,7 @@ else {
     console.error("No se encontró el botón con la clase .adelante");
 }
 
+//Script para hacer que las cartas se puedas trasladar hacia arriba cuando hacemos un click
 document.addEventListener('DOMContentLoaded', function () {
     const cartas = document.querySelectorAll('.menu img');
     let selectedCarta = null;
@@ -50,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        //Función para que detecte un segundo click y vaya a la sección correspondiente
         carta.addEventListener('dblclick', function () {
             if (selectedCarta === this) {
                 // Referencia a una sección distinta

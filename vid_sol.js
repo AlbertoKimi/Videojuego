@@ -82,13 +82,13 @@ const crearCartaHTML = (carta) => {
 
 const crearCartaFantasma1 = () => {
     const cartaFantasma = document.createElement("div");
-    cartaFantasma.classList.add("carta", "fantasma"); // Asegúrate de tener estilos para .fantasma
+    cartaFantasma.classList.add("carta", "fantasma"); 
     cartaFantasma.style.width = '120px';
     cartaFantasma.style.height = '173px';
     cartaFantasma.style.opacity = '100%'
     // Crear el elemento de imagen
     const imagen = document.createElement("img");
-    imagen.src = 'Imagenes/rein.webp'; // Asegúrate de que la ruta de la imagen sea correcta
+    imagen.src = 'Imagenes/rein.webp'; 
     imagen.alt = "Carta Fantasma"; // Texto alternativo para la imagen
     imagen.style.width = '100%'; // Ajustar el tamaño de la imagen al contenedor
     imagen.style.height = '100%'; // Ajustar el tamaño de la imagen al contenedor
@@ -124,6 +124,7 @@ const crearCartaFantasma = (columnaIndex) => {
     return cartaFantasma;
 };
 
+// Crea una carta fantasma en hogar
 const crearCartaFantasmaHogar = (hogarIndex) => {
     const cartaFantasma = document.createElement("div");
     cartaFantasma.classList.add("carta", "fantasma");
@@ -132,7 +133,6 @@ const crearCartaFantasmaHogar = (hogarIndex) => {
     cartaFantasma.style.width = '120px';
     cartaFantasma.style.height = '173px';
     cartaFantasma.style.opacity = '100%'
-    /*cartaFantasma.style.display = 'inline-block';*/
     cartaFantasma.style.top = '5px';
     cartaFantasma.onclick = () => comprobarClick(cartaFantasma);
     return cartaFantasma;
@@ -185,11 +185,11 @@ const moverCartasDeSeleccionadasAInicio = () => {
     }
 };
 
-// Ejemplo de uso
+
 // Llama a esta función cuando necesites mover las cartas, por ejemplo, al hacer clic en la carta fantasma
 const cartaFantasma = document.createElement("div");
 cartaFantasma.onclick = () => {
-    moverCartasSeleccionadas(); // Mueve las cartas al hacer clic en la carta fantasma
+    moverACartasSeleccionadas(); // Mueve las cartas al hacer clic en la carta fantasma
     cartaFantasma.remove(); // Elimina la carta fantasma del DOM
 };
 
@@ -290,6 +290,7 @@ const comprobarClick = (carta) => {
     }
 };
 
+//Función para controlar el primer click
 const seleccionarPrimerClick = (carta) => {
     let pilaCartaSeleccionada = [];
     if (carta.parentElement.id === "c_seleccionada") {
@@ -317,6 +318,7 @@ const seleccionarPrimerClick = (carta) => {
     console.log("Carta seleccionada correctamente:", primerClick.dataset);
 };
 
+//Función para controlar el segundo click
 const procesarSegundoClick = (carta) => {
     console.log("Mazo seleccionar antes de mover:", seleccionar);
 
@@ -356,6 +358,7 @@ const procesarSegundoClick = (carta) => {
 
     console.log("Índice de la carta seleccionada:", indiceCartaSeleccionada);
 
+    //Lógica de movimientos permitidos
     if (movimientoPermitido(indiceCartaSeleccionada, segundoClick)) {
         moverCartas(pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada);
     } else if (movimientoReyAColumnaVacia(primerClick, segundoClick)) {
@@ -372,6 +375,10 @@ const procesarSegundoClick = (carta) => {
     resetearSeleccion();
 };
 
+
+// =====================================================
+// FUNCIONES AUXILIARES PARA LOS MOVIMIENTOS PERMITIDOS
+// =====================================================
 const movimientoPermitido = (indiceCartaSeleccionada, segundoClick) => {
     return (
         indiceCartaSeleccionada !== -1 &&
@@ -628,6 +635,7 @@ const verificarVictoria = () => {
     }
 };
 
+//Función para mostrar la ventana emergente de victoria
 const mostrarVentanaVictoria = (puntuacion) => {
     detenerReloj(); // Asegurar que el reloj se detenga cuando aparezca la ventana emergente de victoria
     const modal = document.querySelector("#modal");
@@ -645,6 +653,7 @@ const mostrarVentanaVictoria = (puntuacion) => {
     };
 };
 
+//Funciones relacionadas con el reloj para pararlo, inicializarlo,actualizarlo
 const iniciarReloj = () => {
     tiempoInicio = Date.now();
     intervaloReloj = setInterval(actualizarReloj, 1000);
@@ -662,6 +671,7 @@ const detenerReloj = () => {
     clearInterval(intervaloReloj);
 };
 
+//Funciones para calcular la puntuación y guardarla
 const calcularPuntuacion = (tiempoTotal) => {
     const minutos = tiempoTotal / 60;
     let puntuacion = 800;
@@ -686,9 +696,9 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-// =====================
-// EVENTOS
-// =====================
+// ===========================
+// EVENTO BOTÓN EMPEZAR JUEGO
+// ===========================
 if (botonEmpezar) {
     botonEmpezar.onclick = () => {
         // Detener el reloj antes de reiniciar el juego
