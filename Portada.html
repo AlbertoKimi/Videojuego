@@ -6,15 +6,6 @@
     <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solitario</title>
-
-</head>
-
-<body>
-
-    <video muted autoplay loop id="videoFondo">
-        <source src="Imagenes/Encabezado.mp4" type="video/mp4">
-    </video>
-
     <style>
         #videoFondo {
             position: fixed;
@@ -25,7 +16,25 @@
             object-fit: cover;
             z-index: -1;
         }
+
+        h1 {
+            position: absolute;
+            bottom: 80px; /* Ajustar según sea necesario */
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
     </style>
+</head>
+
+<body>
+
+    <video muted autoplay loop id="videoFondo">
+        <source src="Imagenes/Encabezado.mp4" type="video/mp4">
+    </video>
+    <h1>[ PULSA ENTER ]</h1>
 
     <script>
         const video = document.querySelector("#videoFondo");
