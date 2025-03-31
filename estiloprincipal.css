@@ -70,7 +70,7 @@
 }
 
 /*Divs para los botones de la página index*/
-.inicio, .inicio2, .inicio3 {
+.inicio, .inicio1, .inicio2, .inicio3 {
     width: 200px;
     height: 50px;
     margin-top: 370px;
@@ -80,6 +80,10 @@
     padding: 10px 20px;
     font-weight: 800;
     border: none;
+}
+
+.inicio, .inicio1{
+    margin-right: 25px;
 }
 
 /*Div para las imagenes de fondo de los rectángulos del medio*/
