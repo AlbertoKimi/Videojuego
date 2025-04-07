@@ -201,3 +201,38 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
     background: #555; /* Color del thumb al pasar el mouse */
 }
+
+#estadisticas-modal {
+    font-size: 20px;
+    max-width: 500px;
+    width: 80%;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: 2px solid blueviolet;
+}
+
+#estadisticas-modal h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#estadisticas-modal p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#cerrar-estadisticas {
+    padding: 10px 20px;
+    background-color: blueviolet;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#cerrar-estadisticas:hover {
+    background-color: darkviolet;
+}

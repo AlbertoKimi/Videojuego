@@ -9,6 +9,22 @@ else {
     console.error("No se encontró el botón con la clase .adelante");
 }
 
+const inicio1 = document.querySelector(".inicio1");
+const estadisticasModal = document.querySelector("#estadisticas-modal");
+const cerrarEstadisticas = document.querySelector("#cerrar-estadisticas");
+
+if (inicio1) {
+    inicio1.onclick = () => {
+        estadisticasModal.showModal();
+    };
+}
+
+if (cerrarEstadisticas) {
+    cerrarEstadisticas.onclick = () => {
+        estadisticasModal.close();
+    };
+}
+
 const inicio2 = document.querySelector(".inicio2");
 if (inicio2) {
     inicio2.onclick = () => {
