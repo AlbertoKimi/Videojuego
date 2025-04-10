@@ -12,9 +12,30 @@ else {
 const inicio1 = document.querySelector(".inicio1");
 const estadisticasModal = document.querySelector("#estadisticas-modal");
 const cerrarEstadisticas = document.querySelector("#cerrar-estadisticas");
+const tablaEstadisticas = document.querySelector("#tabla-estadisticas");
 
 if (inicio1) {
     inicio1.onclick = () => {
+        // Ejemplo de datos para la tabla
+        const datos = [
+            { usuario: "Jugador1", puntuacion: 1200 },
+            { usuario: "Jugador2", puntuacion: 950 },
+            { usuario: "Jugador3", puntuacion: 800 }
+        ];
+
+        // Limpiar la tabla antes de agregar nuevas filas
+        tablaEstadisticas.innerHTML = "";
+
+        // Agregar filas a la tabla
+        datos.forEach(dato => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${dato.usuario}</td>
+                <td>${dato.puntuacion}</td>
+            `;
+            tablaEstadisticas.appendChild(fila);
+        });
+
         estadisticasModal.showModal();
     };
 }
