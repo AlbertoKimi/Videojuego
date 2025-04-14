@@ -709,6 +709,10 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
 
     let esNuevoRecord = false;
 
+    // Obtener la fecha y hora actual
+    const fechaActual = new Date().toISOString().split("T")[0]; // Formato YYYY-MM-DD
+    const horaActual = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); // Formato HH:MM:SS
+
     // Verificar si el alias ya existe
     const usuarioExistente = usuarios.find(usuario => 
         usuario.getElementsByTagName("alias")[0]?.textContent === alias
@@ -723,6 +727,8 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
             usuarioExistente.getElementsByTagName("tiempo")[0].textContent = tiempo;
             usuarioExistente.getElementsByTagName("reinicio")[0].textContent = reinicio;
             usuarioExistente.getElementsByTagName("movimientos")[0].textContent = movimientos;
+            usuarioExistente.getElementsByTagName("fecha")[0].textContent = fechaActual; // Actualizar la fecha
+            usuarioExistente.getElementsByTagName("hora")[0].textContent = horaActual; // Actualizar la hora
             console.log(`Puntuación actualizada para el alias: ${alias}`);
             esNuevoRecord = true;
         } else {
@@ -738,6 +744,8 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
                 <tiempo>${tiempo}</tiempo>
                 <reinicio>${reinicio}</reinicio>
                 <movimientos>${movimientos}</movimientos>
+                <fecha>${fechaActual}</fecha>
+                <hora>${horaActual}</hora>
             `;
             usuariosNodo.appendChild(nuevoUsuario);
             esNuevoRecord = true;
@@ -772,6 +780,8 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
                     <tiempo>${tiempo}</tiempo>
                     <reinicio>${reinicio}</reinicio>
                     <movimientos>${movimientos}</movimientos>
+                    <fecha>${fechaActual}</fecha>
+                    <hora>${horaActual}</hora>
                 `;
                 usuariosNodo.appendChild(nuevoUsuario);
                 esNuevoRecord = true;
@@ -964,7 +974,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 //HACER TRAMPAS
-/*const hacerTrampas = () => {
+const hacerTrampas = () => {
     hogares = [[], [], [], []]; // Reiniciar los hogares
     columna = Array.from({ length: 7 }, () => []); // Vaciar las columnas
     mazoBarajado = []; // Vaciar el mazo barajado
@@ -1019,7 +1029,7 @@ document.addEventListener("keydown", (event) => {
 
     console.log("Hogares después de hacer trampas:", hogares);
     console.log("Mazo barajado después de hacer trampas:", mazoBarajado);
-};*/
+};
 
 //TERMINA HACER TRAMPAS
 
@@ -1087,9 +1097,9 @@ if (botonEmpezar) {
         darCartas();
         agregarCartasFantasmaHogar();
         crearPilasHogar();
-        ponerCartasColumna();
+        /*ponerCartasColumna();*/
         ponerCartasInicio();
-        /*hacerTrampas(); // Llamar al método hacerTrampas*/
+        hacerTrampas(); // Llamar al método hacerTrampas
         iniciarReloj(); // Iniciar el reloj
     };
 } else {

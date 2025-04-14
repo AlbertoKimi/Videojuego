@@ -105,7 +105,7 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
     const xml = localStorage.getItem("EstadisticasXML");
     if (!xml) {
         console.warn("No hay datos en EstadisticasXML.");
-        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        tablaEstadisticas.innerHTML = "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
         return;
     }
 
@@ -122,11 +122,18 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
     );
 
     if (!usuario) {
-        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        tablaEstadisticas.innerHTML = "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
         return;
     }
 
-    const alias = usuario.getElementsByTagName("alias")[0]?.textContent || "N/A";
+    // Actualizar el título del modal con el alias del usuario
+    const estadisticasTitulo = document.querySelector("#estadisticas-modal h1");
+    if (estadisticasTitulo) {
+        estadisticasTitulo.textContent = `Estadísticas del usuario: ${aliasSeleccionado}`;
+    }
+
+    const fecha = usuario.getElementsByTagName("fecha")[0]?.textContent || "N/A";
+    const hora = usuario.getElementsByTagName("hora")[0]?.textContent || "N/A";
     const puntos = usuario.getElementsByTagName("puntos")[0]?.textContent || "0";
     const tiempo = usuario.getElementsByTagName("tiempo")[0]?.textContent || "0";
     const reinicio = usuario.getElementsByTagName("reinicio")[0]?.textContent || "0";
@@ -134,7 +141,8 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
 
     const fila = document.createElement("tr");
     fila.innerHTML = `
-        <td>${alias}</td>
+        <td>${fecha}</td>
+        <td>${hora}</td>
         <td>${puntos}</td>
         <td>${tiempo}</td>
         <td>${reinicio}</td>
