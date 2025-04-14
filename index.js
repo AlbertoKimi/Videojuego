@@ -55,17 +55,113 @@ const cargarEstadisticas = () => {
     });
 };
 
+const usuariosModal = document.querySelector("#usuarios-modal");
+const cerrarUsuarios = document.querySelector("#cerrar-usuarios");
+const tablaUsuarios = document.querySelector("#tabla-usuarios");
+
+// Función para cargar usuarios y puntuaciones en el nuevo modal
+const cargarUsuarios = () => {
+    const xml = localStorage.getItem("EstadisticasXML");
+    if (!xml) {
+        console.warn("No hay datos en EstadisticasXML.");
+        tablaUsuarios.innerHTML = "<tr><td colspan='2'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const usuarios = xmlDoc.getElementsByTagName("usuario");
+
+    // Limpiar la tabla antes de agregar nuevas filas
+    tablaUsuarios.innerHTML = "";
+
+    // Verificar si hay usuarios en la base de datos
+    if (usuarios.length === 0) {
+        tablaUsuarios.innerHTML = "<tr><td colspan='2'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    // Agregar filas a la tabla
+    Array.from(usuarios).forEach(usuario => {
+        const alias = usuario.getElementsByTagName("alias")[0]?.textContent || "N/A";
+        const puntos = usuario.getElementsByTagName("puntos")[0]?.textContent || "0";
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${alias}</td>
+            <td>${puntos}</td>
+        `;
+        fila.onclick = () => {
+            cargarEstadisticasUsuario(alias); // Cargar estadísticas del usuario seleccionado
+            usuariosModal.close();
+            estadisticasModal.showModal();
+        };
+        tablaUsuarios.appendChild(fila);
+    });
+};
+
+// Función para cargar estadísticas de un usuario específico
+const cargarEstadisticasUsuario = (aliasSeleccionado) => {
+    const xml = localStorage.getItem("EstadisticasXML");
+    if (!xml) {
+        console.warn("No hay datos en EstadisticasXML.");
+        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const usuarios = xmlDoc.getElementsByTagName("usuario");
+
+    // Limpiar la tabla antes de agregar nuevas filas
+    tablaEstadisticas.innerHTML = "";
+
+    // Buscar el usuario seleccionado
+    const usuario = Array.from(usuarios).find(
+        usuario => usuario.getElementsByTagName("alias")[0]?.textContent === aliasSeleccionado
+    );
+
+    if (!usuario) {
+        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    const alias = usuario.getElementsByTagName("alias")[0]?.textContent || "N/A";
+    const puntos = usuario.getElementsByTagName("puntos")[0]?.textContent || "0";
+    const tiempo = usuario.getElementsByTagName("tiempo")[0]?.textContent || "0";
+    const reinicio = usuario.getElementsByTagName("reinicio")[0]?.textContent || "0";
+    const movimientos = usuario.getElementsByTagName("movimientos")[0]?.textContent || "0";
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+        <td>${alias}</td>
+        <td>${puntos}</td>
+        <td>${tiempo}</td>
+        <td>${reinicio}</td>
+        <td>${movimientos}</td>
+    `;
+    tablaEstadisticas.appendChild(fila);
+};
+
 // Llamar a cargarEstadisticas al abrir el modal de estadísticas
 if (inicio1) {
     inicio1.onclick = () => {
-        cargarEstadisticas(); // Cargar datos en la tabla
-        estadisticasModal.showModal();
+        cargarUsuarios(); // Cargar datos en la tabla de usuarios
+        usuariosModal.showModal();
     };
 }
 
 if (cerrarEstadisticas) {
     cerrarEstadisticas.onclick = () => {
-        estadisticasModal.close();
+        estadisticasModal.close(); // Cerrar el modal de estadísticas
+        usuariosModal.showModal(); // Volver a abrir el modal de usuarios
+    };
+}
+
+// Cerrar el modal de usuarios
+if (cerrarUsuarios) {
+    cerrarUsuarios.onclick = () => {
+        usuariosModal.close();
     };
 }
 
