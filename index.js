@@ -14,28 +14,51 @@ const estadisticasModal = document.querySelector("#estadisticas-modal");
 const cerrarEstadisticas = document.querySelector("#cerrar-estadisticas");
 const tablaEstadisticas = document.querySelector("#tabla-estadisticas");
 
+const cargarEstadisticas = () => {
+    const xml = localStorage.getItem("EstadisticasXML");
+    if (!xml) {
+        console.warn("No hay datos en EstadisticasXML.");
+        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const usuarios = xmlDoc.getElementsByTagName("usuario");
+
+    // Limpiar la tabla antes de agregar nuevas filas
+    tablaEstadisticas.innerHTML = "";
+
+    // Verificar si hay usuarios en la base de datos
+    if (usuarios.length === 0) {
+        tablaEstadisticas.innerHTML = "<tr><td colspan='5'>No hay datos disponibles</td></tr>";
+        return;
+    }
+
+    // Agregar filas a la tabla
+    Array.from(usuarios).forEach(usuario => {
+        const alias = usuario.getElementsByTagName("alias")[0]?.textContent || "N/A";
+        const puntos = usuario.getElementsByTagName("puntos")[0]?.textContent || "0";
+        const tiempo = usuario.getElementsByTagName("tiempo")[0]?.textContent || "0";
+        const reinicio = usuario.getElementsByTagName("reinicio")[0]?.textContent || "0";
+        const movimientos = usuario.getElementsByTagName("movimientos")[0]?.textContent || "0";
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${alias}</td>
+            <td>${puntos}</td>
+            <td>${tiempo}</td>
+            <td>${reinicio}</td>
+            <td>${movimientos}</td>
+        `;
+        tablaEstadisticas.appendChild(fila);
+    });
+};
+
+// Llamar a cargarEstadisticas al abrir el modal de estadísticas
 if (inicio1) {
     inicio1.onclick = () => {
-        // Ejemplo de datos para la tabla
-        const datos = [
-            { usuario: "Jugador1", puntuacion: 1200 },
-            { usuario: "Jugador2", puntuacion: 950 },
-            { usuario: "Jugador3", puntuacion: 800 }
-        ];
-
-        // Limpiar la tabla antes de agregar nuevas filas
-        tablaEstadisticas.innerHTML = "";
-
-        // Agregar filas a la tabla
-        datos.forEach(dato => {
-            const fila = document.createElement("tr");
-            fila.innerHTML = `
-                <td>${dato.usuario}</td>
-                <td>${dato.puntuacion}</td>
-            `;
-            tablaEstadisticas.appendChild(fila);
-        });
-
+        cargarEstadisticas(); // Cargar datos en la tabla
         estadisticasModal.showModal();
     };
 }

@@ -60,10 +60,12 @@
     <script src="vid_sol.js"></script>
     <!-- Ventana emergente cuando ganamos el juego-->
     <dialog class="ventana" id="modal">
-        <h1>¡Felicidades!</h1>
-        <p>Has ganado el juego</p>
-        <button class="bot" id="reiniciar">Jugar de nuevo</button>
-        <button class="bot" id="inicio">Volver al inicio</button>
+        <form id="formulario-alias">
+            <h1>¡Felicidades!</h1>
+            <label for="alias">Vamos a registrar su partida</label>
+            <input type="text" id="alias" name="alias" placeholder="Introduce tu Nickname" required>
+            <button type="submit" class="bot">Enviar</button>
+        </form>
     </dialog>       
 </body>
 

@@ -13,6 +13,9 @@ const COLORES = { Co: "rojo", Tr: "negro", Di: "rojo", Pi: "negro" };
 
 let tiempoInicio;
 let intervaloReloj;
+let contadorReinicios = 0; // Variable para contar los reinicios
+let tiempoAcumulado = 0; // Variable para acumular el tiempo total entre reinicios
+let contadorMovimientos = 0; // Variable para contar los movimientos realizados
 
 // =====================
 // ELEMENTOS DEL DOM
@@ -453,6 +456,7 @@ const moverCartas = (pilaPrimeraCarta, pilaSegundaCarta, indiceCartaSeleccionada
     }
 
     ponerCartasColumna();
+    contarMovimientos(); // Incrementar el contador de movimientos
 };
 
 const moverReyAColumnaVacia = (pilaPrimeraCarta, segundoClick, indiceCartaSeleccionada) => {
@@ -494,6 +498,7 @@ const moverReyAColumnaVacia = (pilaPrimeraCarta, segundoClick, indiceCartaSelecc
 
     ponerCartasColumna();
     verificarVictoria();
+    contarMovimientos(); // Incrementar el contador de movimientos
 };
 
 const moverAsAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
@@ -533,6 +538,7 @@ const moverAsAHogar = (primerClick, segundoClick, indiceCartaSeleccionada) => {
     console.log(hogares);
     ponerCartasColumna();
     verificarVictoria();
+    contarMovimientos(); // Incrementar el contador de movimientos
 };
 
 const moverCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indiceCartaSeleccionada) => {
@@ -563,6 +569,7 @@ const moverCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indiceCar
     console.log(`Carta movida a hogar-${hogarIndex}:`, cartaSeleccionada);
     console.log(hogares);
     verificarVictoria();
+    contarMovimientos(); // Incrementar el contador de movimientos
 
     if (pilaPrimeraCarta.length > 0) {
         pilaPrimeraCarta[pilaPrimeraCarta.length - 1].estaVolteada = false;
@@ -637,20 +644,168 @@ const verificarVictoria = () => {
 
 //Función para mostrar la ventana emergente de victoria
 const mostrarVentanaVictoria = (puntuacion) => {
-    detenerReloj(); // Asegurar que el reloj se detenga cuando aparezca la ventana emergente de victoria
+    detenerReloj(); // Detener el reloj
+    const tiempoTotal = obtenerTiempoTotal(); // Obtener el tiempo total acumulado
     const modal = document.querySelector("#modal");
-    const jugar = document.querySelector("#reiniciar");
-    const inicio = document.querySelector("#inicio");
-    modal.querySelector("p").textContent = `Has ganado el juego con una puntuación de ${puntuacion} puntos`;
-    modal.showModal();
-    jugar.onclick = () => {
-        botonEmpezar.click();
-        modal.close();
+    const formularioAlias = document.querySelector("#formulario-alias");
+
+    formularioAlias.onsubmit = (event) => {
+        event.preventDefault();
+        const alias = document.querySelector("#alias").value.trim();
+        if (alias) {
+            const esNuevoRecord = guardarEnXML(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en XML y comprobar si es un nuevo récord
+            modal.close(); // Cerrar la ventana emergente actual
+            mostrarVentanaResultado(esNuevoRecord); // Mostrar la nueva ventana emergente
+        } else {
+            alert("Por favor, introduce un alias válido.");
+        }
     };
-    inicio.onclick = () => {
+
+    modal.showModal(); // Mostrar el formulario
+};
+
+// Nueva función para mostrar la ventana emergente con el resultado
+const mostrarVentanaResultado = (esNuevoRecord) => {
+    const nuevaVentana = document.createElement("dialog");
+    nuevaVentana.classList.add("ventana");
+
+    // Cambiar el fondo según el resultado
+    const fondo = esNuevoRecord ? "Imagenes/recod.gif" : "Imagenes/Gracias.gif";
+
+    nuevaVentana.style.backgroundImage = `url(${fondo})`;
+    nuevaVentana.style.backgroundSize = "cover";
+    nuevaVentana.style.backgroundPosition = "center";
+
+    nuevaVentana.innerHTML = `
+        <div class="botones-resultado">
+            <button id="volver-jugar">Volver a jugar</button>
+            <button id="volver-inicio">Inicio</button>
+        </div>
+    `;
+
+    document.body.appendChild(nuevaVentana);
+
+    // Botón para volver a jugar
+    nuevaVentana.querySelector("#volver-jugar").onclick = () => {
+        window.location.href = "Principal.html";
+    };
+
+    // Botón para volver al inicio
+    nuevaVentana.querySelector("#volver-inicio").onclick = () => {
         window.location.href = "index.html";
-        modal.close();
     };
+
+    nuevaVentana.showModal();
+};
+
+// Modificar la función guardarEnXML para devolver si es un nuevo récord
+const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
+    let xml = localStorage.getItem("EstadisticasXML");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+    const usuariosNodo = xmlDoc.getElementsByTagName("usuarios")[0];
+    const usuarios = Array.from(usuariosNodo.getElementsByTagName("usuario"));
+
+    let esNuevoRecord = false;
+
+    // Verificar si el alias ya existe
+    const usuarioExistente = usuarios.find(usuario => 
+        usuario.getElementsByTagName("alias")[0]?.textContent === alias
+    );
+
+    if (usuarioExistente) {
+        // Si el alias existe, comprobar la puntuación
+        const puntuacionExistente = parseInt(usuarioExistente.getElementsByTagName("puntos")[0]?.textContent, 10);
+        if (puntuacion > puntuacionExistente) {
+            // Sobrescribir los datos si la nueva puntuación es mayor
+            usuarioExistente.getElementsByTagName("puntos")[0].textContent = puntuacion;
+            usuarioExistente.getElementsByTagName("tiempo")[0].textContent = tiempo;
+            usuarioExistente.getElementsByTagName("reinicio")[0].textContent = reinicio;
+            usuarioExistente.getElementsByTagName("movimientos")[0].textContent = movimientos;
+            console.log(`Puntuación actualizada para el alias: ${alias}`);
+            esNuevoRecord = true;
+        } else {
+            console.log(`La puntuación no es mayor. No se actualizó el alias: ${alias}`);
+        }
+    } else {
+        // Si el alias no existe y hay menos de 10 usuarios, agregar un nuevo usuario
+        if (usuarios.length < 10) {
+            const nuevoUsuario = xmlDoc.createElement("usuario");
+            nuevoUsuario.innerHTML = `
+                <alias>${alias}</alias>
+                <puntos>${puntuacion}</puntos>
+                <tiempo>${tiempo}</tiempo>
+                <reinicio>${reinicio}</reinicio>
+                <movimientos>${movimientos}</movimientos>
+            `;
+            usuariosNodo.appendChild(nuevoUsuario);
+            esNuevoRecord = true;
+        } else {
+            // Si hay 10 usuarios, verificar si el nuevo usuario puede reemplazar al último
+            const usuariosOrdenados = usuarios.sort((a, b) => {
+                const puntosA = parseInt(a.getElementsByTagName("puntos")[0]?.textContent, 10);
+                const puntosB = parseInt(b.getElementsByTagName("puntos")[0]?.textContent, 10);
+                if (puntosA === puntosB) {
+                    const reiniciosA = parseInt(a.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                    const reiniciosB = parseInt(b.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                    return reiniciosA - reiniciosB; // Ordenar por menos reinicios en caso de empate
+                }
+                return puntosB - puntosA; // Ordenar por puntuación de mayor a menor
+            });
+
+            const ultimoUsuario = usuariosOrdenados[usuariosOrdenados.length - 1];
+            const puntosUltimo = parseInt(ultimoUsuario.getElementsByTagName("puntos")[0]?.textContent, 10);
+            const reiniciosUltimo = parseInt(ultimoUsuario.getElementsByTagName("reinicio")[0]?.textContent, 10);
+
+            if (
+                puntuacion > puntosUltimo || 
+                (puntuacion === puntosUltimo && reinicio < reiniciosUltimo)
+            ) {
+                // Reemplazar al último usuario
+                usuariosNodo.removeChild(ultimoUsuario);
+
+                const nuevoUsuario = xmlDoc.createElement("usuario");
+                nuevoUsuario.innerHTML = `
+                    <alias>${alias}</alias>
+                    <puntos>${puntuacion}</puntos>
+                    <tiempo>${tiempo}</tiempo>
+                    <reinicio>${reinicio}</reinicio>
+                    <movimientos>${movimientos}</movimientos>
+                `;
+                usuariosNodo.appendChild(nuevoUsuario);
+                esNuevoRecord = true;
+                console.log(`El usuario ${alias} reemplazó al último usuario en la base de datos.`);
+            } else {
+                console.log(`El usuario ${alias} no tiene mejor puntuación o menos reinicios que el último usuario.`);
+            }
+        }
+    }
+
+    // Limitar la base de datos a los 10 mejores usuarios
+    const usuariosActualizados = Array.from(usuariosNodo.getElementsByTagName("usuario"))
+        .sort((a, b) => {
+            const puntosA = parseInt(a.getElementsByTagName("puntos")[0]?.textContent, 10);
+            const puntosB = parseInt(b.getElementsByTagName("puntos")[0]?.textContent, 10);
+            if (puntosA === puntosB) {
+                const reiniciosA = parseInt(a.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                const reiniciosB = parseInt(b.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                return reiniciosA - reiniciosB; // Ordenar por menos reinicios en caso de empate
+            }
+            return puntosB - puntosA; // Ordenar por puntuación de mayor a menor
+        })
+        .slice(0, 10);
+
+    // Limpiar los usuarios existentes y agregar los actualizados
+    usuariosNodo.innerHTML = "";
+    usuariosActualizados.forEach(usuario => usuariosNodo.appendChild(usuario));
+
+    // Guardar los datos actualizados en localStorage
+    const serializer = new XMLSerializer();
+    localStorage.setItem("EstadisticasXML", serializer.serializeToString(xmlDoc));
+    console.log("Datos guardados en EstadisticasXML:", serializer.serializeToString(xmlDoc));
+
+    return esNuevoRecord;
 };
 
 //Funciones relacionadas con el reloj para pararlo, inicializarlo,actualizarlo
@@ -671,14 +826,21 @@ const detenerReloj = () => {
     clearInterval(intervaloReloj);
 };
 
+
 //Funciones para calcular la puntuación y guardarla
 const calcularPuntuacion = (tiempoTotal) => {
+    let puntuacion = 5000; // Puntuación inicial
     const minutos = tiempoTotal / 60;
-    let puntuacion = 800;
-
     if (minutos > 1) {
         puntuacion -= Math.round((minutos - 1) * 100); // Restar 100 puntos por cada minuto pasado después del primer minuto
     }
+    if (0<=contadorReinicios && contadorReinicios <=2) {
+        puntuacion += 200;
+    }
+    else{
+        puntuacion -= contadorReinicios * 100;
+    }
+    
 
     return Math.max(puntuacion, 0); // Asegurar que la puntuación no sea negativa
 };
@@ -689,6 +851,111 @@ const guardarPuntuacion = (puntuacion) => {
     localStorage.setItem("puntuaciones", JSON.stringify(puntuaciones));
 };
 
+// Función para guardar datos en EstadisticasXML
+/*const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
+    let xml = localStorage.getItem("EstadisticasXML");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+    const usuariosNodo = xmlDoc.getElementsByTagName("usuarios")[0];
+    const usuarios = Array.from(usuariosNodo.getElementsByTagName("usuario"));
+
+    // Verificar si el alias ya existe
+    const usuarioExistente = usuarios.find(usuario => 
+        usuario.getElementsByTagName("alias")[0]?.textContent === alias
+    );
+
+    if (usuarioExistente) {
+        // Si el alias existe, comprobar la puntuación
+        const puntuacionExistente = parseInt(usuarioExistente.getElementsByTagName("puntos")[0]?.textContent, 10);
+        if (puntuacion > puntuacionExistente) {
+            // Sobrescribir los datos si la nueva puntuación es mayor
+            usuarioExistente.getElementsByTagName("puntos")[0].textContent = puntuacion;
+            usuarioExistente.getElementsByTagName("tiempo")[0].textContent = tiempo;
+            usuarioExistente.getElementsByTagName("reinicio")[0].textContent = reinicio;
+            usuarioExistente.getElementsByTagName("movimientos")[0].textContent = movimientos;
+            console.log(`Puntuación actualizada para el alias: ${alias}`);
+        } else {
+            console.log(`La puntuación no es mayor. No se actualizó el alias: ${alias}`);
+            return; // No guardar si la puntuación no es mayor
+        }
+    } else {
+        // Si el alias no existe y hay menos de 10 usuarios, agregar un nuevo usuario
+        if (usuarios.length < 10) {
+            const nuevoUsuario = xmlDoc.createElement("usuario");
+            nuevoUsuario.innerHTML = `
+                <alias>${alias}</alias>
+                <puntos>${puntuacion}</puntos>
+                <tiempo>${tiempo}</tiempo>
+                <reinicio>${reinicio}</reinicio>
+                <movimientos>${movimientos}</movimientos>
+            `;
+            usuariosNodo.appendChild(nuevoUsuario);
+        } else {
+            // Si hay 10 usuarios, verificar si el nuevo usuario puede reemplazar al último
+            const usuariosOrdenados = usuarios.sort((a, b) => {
+                const puntosA = parseInt(a.getElementsByTagName("puntos")[0]?.textContent, 10);
+                const puntosB = parseInt(b.getElementsByTagName("puntos")[0]?.textContent, 10);
+                if (puntosA === puntosB) {
+                    const reiniciosA = parseInt(a.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                    const reiniciosB = parseInt(b.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                    return reiniciosA - reiniciosB; // Ordenar por menos reinicios en caso de empate
+                }
+                return puntosB - puntosA; // Ordenar por puntuación de mayor a menor
+            });
+
+            const ultimoUsuario = usuariosOrdenados[usuariosOrdenados.length - 1];
+            const puntosUltimo = parseInt(ultimoUsuario.getElementsByTagName("puntos")[0]?.textContent, 10);
+            const reiniciosUltimo = parseInt(ultimoUsuario.getElementsByTagName("reinicio")[0]?.textContent, 10);
+
+            if (
+                puntuacion > puntosUltimo || 
+                (puntuacion === puntosUltimo && reinicio < reiniciosUltimo)
+            ) {
+                // Reemplazar al último usuario
+                usuariosNodo.removeChild(ultimoUsuario);
+
+                const nuevoUsuario = xmlDoc.createElement("usuario");
+                nuevoUsuario.innerHTML = `
+                    <alias>${alias}</alias>
+                    <puntos>${puntuacion}</puntos>
+                    <tiempo>${tiempo}</tiempo>
+                    <reinicio>${reinicio}</reinicio>
+                    <movimientos>${movimientos}</movimientos>
+                `;
+                usuariosNodo.appendChild(nuevoUsuario);
+                console.log(`El usuario ${alias} reemplazó al último usuario en la base de datos.`);
+            } else {
+                console.log(`El usuario ${alias} no tiene mejor puntuación o menos reinicios que el último usuario.`);
+                return;
+            }
+        }
+    }
+
+    // Limitar la base de datos a los 10 mejores usuarios
+    const usuariosActualizados = Array.from(usuariosNodo.getElementsByTagName("usuario"))
+        .sort((a, b) => {
+            const puntosA = parseInt(a.getElementsByTagName("puntos")[0]?.textContent, 10);
+            const puntosB = parseInt(b.getElementsByTagName("puntos")[0]?.textContent, 10);
+            if (puntosA === puntosB) {
+                const reiniciosA = parseInt(a.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                const reiniciosB = parseInt(b.getElementsByTagName("reinicio")[0]?.textContent, 10);
+                return reiniciosA - reiniciosB; // Ordenar por menos reinicios en caso de empate
+            }
+            return puntosB - puntosA; // Ordenar por puntuación de mayor a menor
+        })
+        .slice(0, 10);
+
+    // Limpiar los usuarios existentes y agregar los actualizados
+    usuariosNodo.innerHTML = "";
+    usuariosActualizados.forEach(usuario => usuariosNodo.appendChild(usuario));
+
+    // Guardar los datos actualizados en localStorage
+    const serializer = new XMLSerializer();
+    localStorage.setItem("EstadisticasXML", serializer.serializeToString(xmlDoc));
+    console.log("Datos guardados en EstadisticasXML:", serializer.serializeToString(xmlDoc));
+};*/
+
 //Si le damos a la tecla esc va a la página principal
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -696,13 +963,106 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+//HACER TRAMPAS
+/*const hacerTrampas = () => {
+    hogares = [[], [], [], []]; // Reiniciar los hogares
+    columna = Array.from({ length: 7 }, () => []); // Vaciar las columnas
+    mazoBarajado = []; // Vaciar el mazo barajado
+
+    // Colocar las cartas en los hogares excepto las de número 12 y 13
+    TIPOS.forEach((tipo, index) => {
+        for (let i = 1; i <= 11; i++) {
+            hogares[index].push({
+                numero: i,
+                color: COLORES[tipo],
+                tipo,
+                img: `${i}${tipo}.png`,
+                estaVolteada: false
+            });
+        }
+    });
+
+    // Colocar las cartas de número 12 y 13 en el mazoBarajado
+    TIPOS.forEach(tipo => {
+        for (let i = 12; i <= 13; i++) {
+            mazoBarajado.push({
+                numero: i,
+                color: COLORES[tipo],
+                tipo,
+                img: `${i}${tipo}.png`,
+                estaVolteada: true
+            });
+        }
+    });
+
+    // Actualizar visualmente los hogares
+    hogares.forEach((hogar, index) => {
+        const hogarElemento = document.querySelector(`#hogar-${index}`);
+        if (hogarElemento) {
+            hogarElemento.innerHTML = ""; // Limpiar el contenido del hogar
+            hogar.forEach(carta => {
+                const cartaHTML = crearCartaHTML(carta);
+                hogarElemento.appendChild(cartaHTML);
+            });
+            // Agregar carta fantasma en la última posición
+            const cartaFantasma = crearCartaFantasmaHogar(index);
+            hogarElemento.appendChild(cartaFantasma);
+        }
+    });
+
+    // Actualizar visualmente el mazo de inicio
+    inicial.innerHTML = ""; // Limpiar el mazo de inicio
+    mazoBarajado.forEach(carta => {
+        const cartaHTML = crearCartaHTML(carta);
+        inicial.appendChild(cartaHTML);
+    });
+
+    console.log("Hogares después de hacer trampas:", hogares);
+    console.log("Mazo barajado después de hacer trampas:", mazoBarajado);
+};*/
+
+//TERMINA HACER TRAMPAS
+
+// =====================
+// BASE DE DATOS
+// =====================
+
+// Función para inicializar la base de datos si no existe
+const inicializarBaseDeDatos = () => {
+    const xml = `<estadistica>
+        <usuarios>
+        </usuarios>
+    </estadistica>`;
+    localStorage.setItem("EstadisticasXML", xml);
+    console.log("Base de datos inicializada.");
+};
+
+// Llamar a inicializarBaseDeDatos al cargar la página
+document.addEventListener("DOMContentLoaded", () => {
+    if (!localStorage.getItem("EstadisticasXML")) {
+        inicializarBaseDeDatos();
+    } else {
+        console.log("Base de datos ya existente. Datos cargados desde localStorage.");
+    }
+});
+
 // ===========================
 // EVENTO BOTÓN EMPEZAR JUEGO
 // ===========================
+let juegoIniciado = false; // Variable para controlar si el juego ya ha comenzado
+
 if (botonEmpezar) {
     botonEmpezar.onclick = () => {
-        // Detener el reloj antes de reiniciar el juego
-        detenerReloj();
+        if (juegoIniciado) {
+            detenerTiempo(); // Detener y acumular el tiempo antes de reiniciar
+            incrementarReinicios(); // Incrementar el contador de reinicios
+        } else {
+            juegoIniciado = true; // Marcar que el juego ha comenzado
+        }
+
+        contadorMovimientos = 0; // Reiniciar el contador de movimientos
+        calcularTiempo(); // Iniciar el cálculo del tiempo
+        detenerReloj(); // Detener el reloj antes de reiniciar el juego
 
         // Reiniciar variables y tablero
         mazo = [];
@@ -725,15 +1085,56 @@ if (botonEmpezar) {
         crearMazo();
         barajarMazo();
         darCartas();
-        ponerCartasColumna();
         agregarCartasFantasmaHogar();
         crearPilasHogar();
+        ponerCartasColumna();
         ponerCartasInicio();
+        /*hacerTrampas(); // Llamar al método hacerTrampas*/
         iniciarReloj(); // Iniciar el reloj
     };
 } else {
     console.error("No se encontró el botón con la clase .adelante");
 }
+
+// Función para incrementar el contador de reinicios
+const incrementarReinicios = () => {
+    contadorReinicios++;
+    console.log(`Reinicios: ${contadorReinicios}`);
+};
+
+// Función para iniciar el cálculo del tiempo
+const calcularTiempo = () => {
+    tiempoInicio = Date.now(); // Guardar el tiempo actual como inicio
+    console.log("Tiempo iniciado:", tiempoInicio);
+};
+
+// Función para detener el cálculo del tiempo y acumularlo
+const detenerTiempo = () => {
+    if (!tiempoInicio) {
+        console.error("El tiempo no se ha iniciado correctamente.");
+        return;
+    }
+    const tiempoFin = Date.now(); // Guardar el tiempo actual como fin
+    tiempoAcumulado += Math.floor((tiempoFin - tiempoInicio) / 1000); // Acumular el tiempo transcurrido en segundos
+    tiempoInicio = null; // Reiniciar tiempoInicio para evitar cálculos incorrectos
+    console.log("Tiempo acumulado:", tiempoAcumulado, "segundos");
+};
+
+// Función para obtener el tiempo total acumulado
+const obtenerTiempoTotal = () => {
+    if (tiempoInicio) {
+        detenerTiempo(); // Asegurarse de acumular el tiempo actual antes de devolver el total
+    }
+    console.log("Tiempo total acumulado:", tiempoAcumulado, "segundos");
+    return tiempoAcumulado;
+};
+
+// Función para incrementar el contador de movimientos
+const contarMovimientos = () => {
+    contadorMovimientos++;
+    console.log(`Movimientos realizados: ${contadorMovimientos}`);
+};
+
 
 
 

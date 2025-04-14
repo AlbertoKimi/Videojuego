@@ -203,13 +203,13 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 #estadisticas-modal {
-    margin-top: 100px;
-    margin-left: 500px;
+    margin-top: 20px;
+    margin-left: 450px;
     font-size: 20px;
-    max-width: 550px;
+    max-width: 670px;
     width: 80%;
-    max-height: 3500px;
-    height: 80%;
+    max-height: 10000px;
+    /*height: 80%;*/
     text-align: center;
     padding: 20px;
     border-radius: 10px;
