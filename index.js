@@ -59,12 +59,24 @@ const usuariosModal = document.querySelector("#usuarios-modal");
 const cerrarUsuarios = document.querySelector("#cerrar-usuarios");
 const tablaUsuarios = document.querySelector("#tabla-usuarios");
 
+const escalarVentana = (modal, tabla) => {
+    const filas = tabla.querySelectorAll("tr").length;
+    const alturaBase = 195; // Altura base del modal
+    const alturaPorFila = 50; // Altura adicional por fila
+    const nuevaAltura = Math.min(alturaBase + filas * alturaPorFila, 640); // Limitar la altura máxima
+
+    modal.style.height = `${nuevaAltura}px`; // Ajustar la altura del modal
+    modal.style.top = "20%"; // Mantener centrado verticalmente
+    modal.style.transform = "translateY(-10%)"; // Ajustar para centrar
+};
+
 // Función para cargar usuarios y puntuaciones en el nuevo modal
 const cargarUsuarios = () => {
     const xml = localStorage.getItem("EstadisticasXML");
     if (!xml) {
         console.warn("No hay datos en EstadisticasXML.");
         tablaUsuarios.innerHTML = "<tr><td colspan='2'>No hay datos disponibles</td></tr>";
+        escalarVentana(usuariosModal, tablaUsuarios); // Escalar ventana
         return;
     }
 
@@ -78,6 +90,7 @@ const cargarUsuarios = () => {
     // Verificar si hay usuarios en la base de datos
     if (usuarios.length === 0) {
         tablaUsuarios.innerHTML = "<tr><td colspan='2'>No hay datos disponibles</td></tr>";
+        escalarVentana(usuariosModal, tablaUsuarios); // Escalar ventana
         return;
     }
 
@@ -98,6 +111,8 @@ const cargarUsuarios = () => {
         };
         tablaUsuarios.appendChild(fila);
     });
+
+    escalarVentana(usuariosModal, tablaUsuarios); // Escalar ventana
 };
 
 // Función para cargar estadísticas de un usuario específico
@@ -106,6 +121,7 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
     if (!xml) {
         console.warn("No hay datos en RegistrosXML.");
         tablaEstadisticas.innerHTML = "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
+        escalarVentana(estadisticasModal, tablaEstadisticas); // Escalar ventana
         return;
     }
 
@@ -123,6 +139,7 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
 
     if (!usuario) {
         tablaEstadisticas.innerHTML = "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
+        escalarVentana(estadisticasModal, tablaEstadisticas); // Escalar ventana
         return;
     }
 
@@ -153,6 +170,8 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
         `;
         tablaEstadisticas.appendChild(fila);
     });
+
+    escalarVentana(estadisticasModal, tablaEstadisticas); // Escalar ventana
 };
 
 // Llamar a cargarEstadisticas al abrir el modal de estadísticas
