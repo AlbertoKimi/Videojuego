@@ -102,9 +102,9 @@ const cargarUsuarios = () => {
 
 // Función para cargar estadísticas de un usuario específico
 const cargarEstadisticasUsuario = (aliasSeleccionado) => {
-    const xml = localStorage.getItem("EstadisticasXML");
+    const xml = localStorage.getItem("RegistrosXML"); // Cambiar a RegistrosXML
     if (!xml) {
-        console.warn("No hay datos en EstadisticasXML.");
+        console.warn("No hay datos en RegistrosXML.");
         tablaEstadisticas.innerHTML = "<tr><td colspan='6'>No hay datos disponibles</td></tr>";
         return;
     }
@@ -132,23 +132,27 @@ const cargarEstadisticasUsuario = (aliasSeleccionado) => {
         estadisticasTitulo.textContent = `Estadísticas del usuario: ${aliasSeleccionado}`;
     }
 
-    const fecha = usuario.getElementsByTagName("fecha")[0]?.textContent || "N/A";
-    const hora = usuario.getElementsByTagName("hora")[0]?.textContent || "N/A";
-    const puntos = usuario.getElementsByTagName("puntos")[0]?.textContent || "0";
-    const tiempo = usuario.getElementsByTagName("tiempo")[0]?.textContent || "0";
-    const reinicio = usuario.getElementsByTagName("reinicio")[0]?.textContent || "0";
-    const movimientos = usuario.getElementsByTagName("movimientos")[0]?.textContent || "0";
+    // Agregar filas con las estadísticas del usuario
+    const estadisticas = usuario.getElementsByTagName("estadistica");
+    Array.from(estadisticas).forEach(estadistica => {
+        const fecha = estadistica.getElementsByTagName("fecha")[0]?.textContent || "N/A";
+        const hora = estadistica.getElementsByTagName("hora")[0]?.textContent || "N/A";
+        const puntos = estadistica.getElementsByTagName("puntos")[0]?.textContent || "0";
+        const tiempo = estadistica.getElementsByTagName("tiempo")[0]?.textContent || "0";
+        const reinicio = estadistica.getElementsByTagName("reinicio")[0]?.textContent || "0";
+        const movimientos = estadistica.getElementsByTagName("movimientos")[0]?.textContent || "0";
 
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-        <td>${fecha}</td>
-        <td>${hora}</td>
-        <td>${puntos}</td>
-        <td>${tiempo}</td>
-        <td>${reinicio}</td>
-        <td>${movimientos}</td>
-    `;
-    tablaEstadisticas.appendChild(fila);
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${fecha}</td>
+            <td>${hora}</td>
+            <td>${puntos}</td>
+            <td>${tiempo}</td>
+            <td>${reinicio}</td>
+            <td>${movimientos}</td>
+        `;
+        tablaEstadisticas.appendChild(fila);
+    });
 };
 
 // Llamar a cargarEstadisticas al abrir el modal de estadísticas

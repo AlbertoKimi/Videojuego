@@ -654,6 +654,7 @@ const mostrarVentanaVictoria = (puntuacion) => {
         const alias = document.querySelector("#alias").value.trim();
         if (alias) {
             const esNuevoRecord = guardarEnXML(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en XML y comprobar si es un nuevo récord
+            const registro= agregarRegistros(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en el registro
             modal.close(); // Cerrar la ventana emergente actual
             mostrarVentanaResultado(esNuevoRecord); // Mostrar la nueva ventana emergente
         } else {
@@ -816,6 +817,45 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
     console.log("Datos guardados en EstadisticasXML:", serializer.serializeToString(xmlDoc));
 
     return esNuevoRecord;
+};
+
+const agregarRegistros = (alias, puntuacion, tiempo, reinicio, movimientos) => {
+    let xml = localStorage.getItem("RegistrosXML");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml || "<registros><usuarios></usuarios></registros>", "text/xml");
+
+    const usuariosNodo = xmlDoc.getElementsByTagName("usuarios")[0];
+    let usuarioExistente = Array.from(usuariosNodo.getElementsByTagName("usuario")).find(
+        usuario => usuario.getElementsByTagName("alias")[0]?.textContent === alias
+    );
+
+    if (!usuarioExistente) {
+        usuarioExistente = xmlDoc.createElement("usuario");
+        usuarioExistente.innerHTML = `<alias>${alias}</alias>`;
+        usuariosNodo.appendChild(usuarioExistente);
+    }
+
+    const nuevaEstadistica = xmlDoc.createElement("estadistica");
+    nuevaEstadistica.innerHTML = `
+        <fecha>${new Date().toISOString().split("T")[0]}</fecha>
+        <hora>${new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</hora>
+        <puntos>${puntuacion}</puntos>
+        <tiempo>${tiempo}</tiempo>
+        <reinicio>${reinicio}</reinicio>
+        <movimientos>${movimientos}</movimientos>
+    `;
+    usuarioExistente.appendChild(nuevaEstadistica);
+
+    // Limitar a un máximo de 10 registros por usuario
+    const estadisticas = Array.from(usuarioExistente.getElementsByTagName("estadistica"));
+    if (estadisticas.length > 10) {
+        usuarioExistente.removeChild(estadisticas[0]); // Eliminar el registro más antiguo
+    }
+
+    // Guardar los datos actualizados en localStorage
+    const serializer = new XMLSerializer();
+    localStorage.setItem("RegistrosXML", serializer.serializeToString(xmlDoc));
+    console.log("Datos agregados en RegistrosXML:", serializer.serializeToString(xmlDoc));
 };
 
 //Funciones relacionadas con el reloj para pararlo, inicializarlo,actualizarlo
