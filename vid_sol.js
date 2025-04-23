@@ -85,13 +85,13 @@ const crearCartaHTML = (carta) => {
 
 const crearCartaFantasma1 = () => {
     const cartaFantasma = document.createElement("div");
-    cartaFantasma.classList.add("carta", "fantasma"); 
+    cartaFantasma.classList.add("carta", "fantasma");
     cartaFantasma.style.width = '120px';
     cartaFantasma.style.height = '173px';
     cartaFantasma.style.opacity = '100%'
     // Crear el elemento de imagen
     const imagen = document.createElement("img");
-    imagen.src = 'Imagenes/rein.webp'; 
+    imagen.src = 'Imagenes/rein.webp';
     imagen.alt = "Carta Fantasma"; // Texto alternativo para la imagen
     imagen.style.width = '100%'; // Ajustar el tamaño de la imagen al contenedor
     imagen.style.height = '100%'; // Ajustar el tamaño de la imagen al contenedor
@@ -417,9 +417,9 @@ const movimientoCartaAHogar = (primerClick, segundoClick, pilaPrimeraCarta, indi
     if (
         hogarDestino &&
         ((hogarDestino.length === 0 && cartaSeleccionada.numero === 1) || // Permitir Ases en pilas vacías
-        (hogarDestino.length > 0 &&
-            cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
-            cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo))
+            (hogarDestino.length > 0 &&
+                cartaSeleccionada.numero === hogarDestino[hogarDestino.length - 1].numero + 1 &&
+                cartaSeleccionada.tipo === hogarDestino[hogarDestino.length - 1].tipo))
     ) {
         return true;
     }
@@ -654,9 +654,9 @@ const mostrarVentanaVictoria = (puntuacion) => {
         const alias = document.querySelector("#alias").value.trim();
         if (alias) {
             const esNuevoRecord = guardarEnXML(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en XML y comprobar si es un nuevo récord
-            const registro= agregarRegistros(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en el registro
+            const registro = agregarRegistros(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en el registro
             modal.close(); // Cerrar la ventana emergente actual
-            mostrarVentanaResultado(esNuevoRecord,puntuacion); // Mostrar la nueva ventana emergente
+            mostrarVentanaResultado(esNuevoRecord, puntuacion); // Mostrar la nueva ventana emergente
         } else {
             alert("Por favor, introduce un alias válido.");
         }
@@ -666,7 +666,7 @@ const mostrarVentanaVictoria = (puntuacion) => {
 };
 
 // Nueva función para mostrar la ventana emergente con el resultado
-const mostrarVentanaResultado = (esNuevoRecord,puntuacion) => {
+const mostrarVentanaResultado = (esNuevoRecord, puntuacion) => {
     const nuevaVentana = document.createElement("dialog");
     nuevaVentana.classList.add("ventana");
 
@@ -701,7 +701,7 @@ const mostrarVentanaResultado = (esNuevoRecord,puntuacion) => {
     nuevaVentana.showModal();
 };
 
-// Modificar la función guardarEnXML para devolver si es un nuevo récord
+// Función para guardar los daatos en el xml
 const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
     let xml = localStorage.getItem("EstadisticasXML");
     const parser = new DOMParser();
@@ -717,7 +717,7 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
     const horaActual = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); // Formato HH:MM:SS
 
     // Verificar si el alias ya existe
-    const usuarioExistente = usuarios.find(usuario => 
+    const usuarioExistente = usuarios.find(usuario =>
         usuario.getElementsByTagName("alias")[0]?.textContent === alias
     );
 
@@ -770,7 +770,7 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
             const reiniciosUltimo = parseInt(ultimoUsuario.getElementsByTagName("reinicio")[0]?.textContent, 10);
 
             if (
-                puntuacion > puntosUltimo || 
+                puntuacion > puntosUltimo ||
                 (puntuacion === puntosUltimo && reinicio < reiniciosUltimo)
             ) {
                 // Reemplazar al último usuario
@@ -821,6 +821,7 @@ const guardarEnXML = (alias, puntuacion, tiempo, reinicio, movimientos) => {
     return esNuevoRecord;
 };
 
+//Función para agregar registros al XML
 const agregarRegistros = (alias, puntuacion, tiempo, reinicio, movimientos) => {
     let xml = localStorage.getItem("RegistrosXML");
     const parser = new DOMParser();
@@ -886,13 +887,13 @@ const calcularPuntuacion = (tiempoTotal) => {
     if (minutos > 1) {
         puntuacion -= Math.round((minutos - 1) * 100); // Restar 100 puntos por cada minuto pasado después del primer minuto
     }
-    if (0<=contadorReinicios && contadorReinicios <=2) {
+    if (0 <= contadorReinicios && contadorReinicios <= 2) {
         puntuacion += 200;
     }
-    else{
+    else {
         puntuacion -= contadorReinicios * 100;
     }
-    
+
 
     return Math.max(puntuacion, 0); // Asegurar que la puntuación no sea negativa
 };
@@ -911,8 +912,8 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-//HACER TRAMPAS
-const hacerTrampas = () => {
+//HACER TRAMPAS ---> Son funciones para poder hacer trampas para poder depurar bien el código y comprobar los cambios.
+/*const hacerTrampas = () => {
     hogares = [[], [], [], []]; // Reiniciar los hogares
     columna = Array.from({ length: 7 }, () => []); // Vaciar las columnas
     mazoBarajado = []; // Vaciar el mazo barajado
@@ -967,7 +968,7 @@ const hacerTrampas = () => {
 
     console.log("Hogares después de hacer trampas:", hogares);
     console.log("Mazo barajado después de hacer trampas:", mazoBarajado);
-};
+};*/
 
 //TERMINA HACER TRAMPAS
 
@@ -1035,10 +1036,10 @@ if (botonEmpezar) {
         darCartas();
         agregarCartasFantasmaHogar();
         crearPilasHogar();
-        /*ponerCartasColumna();*/
+        ponerCartasColumna();
         ponerCartasInicio();
-        hacerTrampas(); // Llamar al método hacerTrampas
-        iniciarReloj(); // Iniciar el reloj
+        /*hacerTrampas();*/
+        iniciarReloj();
     };
 } else {
     console.error("No se encontró el botón con la clase .adelante");

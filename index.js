@@ -14,6 +14,8 @@ const estadisticasModal = document.querySelector("#estadisticas-modal");
 const cerrarEstadisticas = document.querySelector("#cerrar-estadisticas");
 const tablaEstadisticas = document.querySelector("#tabla-estadisticas");
 
+// Verificar si el modal de estadísticas existe antes de agregar el evento
+
 const cargarEstadisticas = () => {
     const xml = localStorage.getItem("EstadisticasXML");
     if (!xml) {
