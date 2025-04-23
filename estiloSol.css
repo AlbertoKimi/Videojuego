@@ -45,7 +45,7 @@ body {
 
 /*Estilos para los botones de la ventana emergente*/
 #volver-jugar {
-    margin-top: 350px;
+    margin-top: 70px;
     color: white;
     background-color: blueviolet;
     border-radius: 45px;
@@ -55,13 +55,18 @@ body {
 }
 
 #volver-inicio {
-    margin-top: 10px;
+    margin-top: 70px;
     color: white;
     background-color: blueviolet;
     border-radius: 45px;
     padding: 10px 20px;
     font-weight: 1000;
     border: none;
+}
+
+/*Estilo h1 puntuación*/
+#resultado{
+    margin-top: 230px;
 }
 
 /*Hasta ventana son los estilos del texto y de la ventana emergente de victoria*/

@@ -656,7 +656,7 @@ const mostrarVentanaVictoria = (puntuacion) => {
             const esNuevoRecord = guardarEnXML(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en XML y comprobar si es un nuevo récord
             const registro= agregarRegistros(alias, puntuacion, tiempoTotal, contadorReinicios, contadorMovimientos); // Guardar datos en el registro
             modal.close(); // Cerrar la ventana emergente actual
-            mostrarVentanaResultado(esNuevoRecord); // Mostrar la nueva ventana emergente
+            mostrarVentanaResultado(esNuevoRecord,puntuacion); // Mostrar la nueva ventana emergente
         } else {
             alert("Por favor, introduce un alias válido.");
         }
@@ -666,7 +666,7 @@ const mostrarVentanaVictoria = (puntuacion) => {
 };
 
 // Nueva función para mostrar la ventana emergente con el resultado
-const mostrarVentanaResultado = (esNuevoRecord) => {
+const mostrarVentanaResultado = (esNuevoRecord,puntuacion) => {
     const nuevaVentana = document.createElement("dialog");
     nuevaVentana.classList.add("ventana");
 
@@ -678,7 +678,9 @@ const mostrarVentanaResultado = (esNuevoRecord) => {
     nuevaVentana.style.backgroundPosition = "center";
 
     nuevaVentana.innerHTML = `
-        <div class="botones-resultado">
+        
+        <div>
+            <h1 id= "resultado">PUNTUACIÓN: ${puntuacion}</h1>
             <button id="volver-jugar">Volver a jugar</button>
             <button id="volver-inicio">Inicio</button>
         </div>
